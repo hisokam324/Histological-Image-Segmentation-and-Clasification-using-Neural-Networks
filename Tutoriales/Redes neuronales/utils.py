@@ -56,8 +56,8 @@ def load_images(DATA_PATH = "data_y", getMask = True):
     
     X = X.transpose(0, 3, 1, 2)
 
-    print("mascaras")
     if getMask:
+        print("mascaras")
         MASK_PATH = DATA_PATH + "/mask/"
         mask_ids = sorted(os.listdir(MASK_PATH))
         Y = np.zeros((len(mask_ids), IMG_HEIGHT, IMG_WIDTH), dtype=bool)
