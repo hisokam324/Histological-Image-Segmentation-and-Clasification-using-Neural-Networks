@@ -1,0 +1,15 @@
+{
+    "path": {
+        "models": "models",
+        "data_bowl": "data-science-bowl-2018",
+        "train": "stage1_train",
+        "test": "stage1_test",
+        "data_y": "data_y",
+        "data_z": "data_z"
+    },
+    "image": {
+        "heigth": 256,
+        "width": 256,
+        "channels": 3
+    }
+}
