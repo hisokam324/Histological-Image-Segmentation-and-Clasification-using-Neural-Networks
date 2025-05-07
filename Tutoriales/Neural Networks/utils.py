@@ -11,6 +11,7 @@ import json
 class SignalDataset(Dataset):
     def __init__(self, X, Y):
         if not torch.is_tensor(X):
+            X = np.array(X, dtype=np.float32)
             self.X = torch.Tensor(X)
         if not torch.is_tensor(Y):
             self.Y = torch.Tensor(Y)
