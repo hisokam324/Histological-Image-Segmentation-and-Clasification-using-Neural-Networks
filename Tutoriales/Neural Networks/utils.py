@@ -7,20 +7,20 @@ from skimage.io import imread, imshow
 import matplotlib.pyplot as plt
 import json
 
-# Definimos un Dataset de Pytorch
-class SignalDataset(Dataset):
-    def __init__(self, X, Y):
-        if not torch.is_tensor(X):
-            X = np.array(X, dtype=np.float32)
-            self.X = torch.Tensor(X)
-        if not torch.is_tensor(Y):
-            self.Y = torch.Tensor(Y)
+class SignalDataset(torch.utils.data.Dataset):
+    def __init__(self, X, Y, indices=None):
+        self.X = X
+        self.Y = Y
+        self.indices = indices if indices is not None else np.arange(len(Y))
 
     def __len__(self):
-        return len(self.X)
+        return len(self.indices)
 
     def __getitem__(self, idx):
-        return self.X[idx], self.Y[idx]
+        i = self.indices[idx]
+        x = torch.tensor(self.X[i], dtype=torch.float32)
+        y = torch.tensor(self.Y[i], dtype=torch.float32)
+        return x, y
 
 def select_device():
     # Eligiendo dispositivo (se puede cambiar en notebook settings)
@@ -86,9 +86,9 @@ def create_loader(X, Y, batch_size = 64, perc_val = 0.2, perc_test = 0.2):
     val_idxs = s_idxs[n_train:n_train+n_val]
     test_idxs = s_idxs[-n_test:]
 
-    train_set = SignalDataset(X[train_idxs], Y[train_idxs])
-    validation_set = SignalDataset(X[val_idxs], Y[val_idxs])
-    test_set = SignalDataset(X[test_idxs], Y[test_idxs])
+    train_set = SignalDataset(X, Y, indices=train_idxs)
+    validation_set = SignalDataset(X, Y, indices=val_idxs)
+    test_set = SignalDataset(X, Y, indices=test_idxs)
 
     # Generamos dataloaders
     train_loader = DataLoader(train_set, batch_size=batch_size,shuffle=True,num_workers=0)
@@ -114,7 +114,7 @@ def jaccard(mask1, mask2):
 def test_similarity(model, data, device = "cuda"):
     dices = []
     jaccards = []
-    for input, target in data:
+    for input, target in tqdm(data):
         with torch.no_grad():
             output = model(torch.tensor(input, dtype=torch.float32).unsqueeze(0).to(device))
             output = output.squeeze().cpu().numpy()
