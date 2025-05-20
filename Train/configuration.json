@@ -1,0 +1,53 @@
+{
+    "path":{
+        "models": "models",
+        "data": "dataNuInsSeg",
+        "data division": ["train", "validation", "test"]
+    },
+    "image":{
+        "heigth": 512,
+        "width": 512
+    },
+    "models":{
+        "all": ["Unet", "auto", "transfer"],
+        "Unet":{
+            "name": "UNet",
+            "in channels": 3,
+            "out channels": 1,
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam",
+            "save": "unet"
+        },
+        "auto":{
+            "name": "Auto",
+            "in channels": 3,
+            "out channels": 3,
+            "get mask": false,
+            "criterion": "MSELoss",
+            "optimizer": "Adam",
+            "save": "auto"
+        },
+        "transfer":{
+            "name":["UNet", "Auto"],
+            "in channels": 3,
+            "out channels": 1,
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam",
+            "save": "transfer"
+        }
+    },
+    "train":{
+        "gpu ram": 4194304,
+        "batch size": 16,
+        "learn rate": 0.001,
+        "epochs": 20,
+        "patience": 5,
+        "dropout": 0.5,
+        "print epoch": 2,
+        "use saved": true,
+        "verbose":true,
+        "select model": 0
+    }
+}
