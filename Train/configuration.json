@@ -2,51 +2,44 @@
     "path":{
         "models": "models",
         "data": "dataNuInsSeg",
-        "data division": ["train", "validation", "test"]
+        "data division": ["train", "validation", "test"],
+        "json": "history"
     },
     "image":{
-        "heigth": 512,
-        "width": 512
+        "heigth": 256,
+        "width": 256
     },
     "models":{
-        "all": ["Unet", "auto", "transfer"],
-        "Unet":{
-            "name": "UNet",
-            "in channels": 3,
-            "out channels": 1,
+        "all": ["UNet", "Auto", "Transfer"],
+        "UNet":{
+            "model": ["UNet"],
             "get mask": true,
             "criterion": "BCEWithLogitsLoss",
-            "optimizer": "Adam",
-            "save": "unet"
+            "optimizer": "Adam"
         },
-        "auto":{
-            "name": "Auto",
-            "in channels": 3,
-            "out channels": 3,
+        "Auto":{
+            "model": ["Auto"],
             "get mask": false,
             "criterion": "MSELoss",
             "optimizer": "Adam",
             "save": "auto"
         },
-        "transfer":{
-            "name":["UNet", "Auto"],
-            "in channels": 3,
-            "out channels": 1,
+        "Transfer":{
+            "model":["UNet", "Auto"],
             "get mask": true,
             "criterion": "BCEWithLogitsLoss",
-            "optimizer": "Adam",
-            "save": "transfer"
+            "optimizer": "Adam"
         }
     },
     "train":{
         "gpu ram": 4194304,
         "batch size": 16,
-        "learn rate": 0.001,
-        "epochs": 20,
-        "patience": 5,
-        "dropout": 0.5,
+        "learn rate": 0.0001,
+        "epochs": 100,
+        "patience": 10,
+        "dropout": 0.0,
         "print epoch": 2,
-        "use saved": true,
+        "use saved": false,
         "verbose":true,
         "select model": 0
     }

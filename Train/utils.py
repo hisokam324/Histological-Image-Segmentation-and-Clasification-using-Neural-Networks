@@ -20,6 +20,21 @@ class SignalDataset(Dataset):
     def __getitem__(self, idx):
         return self.X[idx], self.Y[idx]
 
+class SignalDataset1(Dataset):
+    def __init__(self, X, Y, indices=None):
+        self.X = X
+        self.Y = Y
+        self.indices = indices if indices is not None else np.arange(len(Y))
+
+    def __len__(self):
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        i = self.indices[idx]
+        x = torch.tensor(self.X[i], dtype=torch.float32)
+        y = torch.tensor(self.Y[i], dtype=torch.float32)
+        return x, y
+
 def select_device(verbose = True):
     is_cuda = torch.cuda.is_available()
 
@@ -34,7 +49,7 @@ def select_device(verbose = True):
     
     return device
 
-def load_images(DATA_PATH = "data_y", IMG_CHANNELS = 3, getMask = True, verbose = True):
+def load_images(DATA_PATH = "data_y", getMask = True, verbose = True, IMG_CHANNELS = 3):
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
@@ -126,3 +141,31 @@ def test_similarity(model, loader, device = "cuda", verbose = True):
         print(f"Dice: {np.mean(dices)}")
         print(f"Jaccard: {np.mean(jaccards)}")
     return np.mean(dices), np.mean(jaccards)
+
+def save_json(selected_model, train_losses, validation_losses, lr, n_epochs, patience, dropout_rate, use_saved_model):
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
+        configuration = json.load(file)
+
+    JSON_PATH = configuration["path"]["json"]
+    JSON_FILE = os.path.join(BASE_DIR, JSON_PATH, f"{selected_model}.json")
+
+    if os.path.exists(JSON_FILE):
+        with open(JSON_FILE) as file:
+            history = json.load(file)  
+    else:
+        history = {}
+
+    history[len(history)] = {"number of epochs": n_epochs,
+                    "patience": patience,
+                    "learn rate": lr,
+                    "dropout": dropout_rate,
+                    "use saved model": use_saved_model,
+                    "train_loss": train_losses,
+                    "validation loss" : validation_losses}
+
+    with open(JSON_FILE, 'w') as file:
+        json.dump(history, file, indent=4,)
+
+    return

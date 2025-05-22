@@ -18,7 +18,7 @@ class DoubleConv(nn.Module):
         return self.double_conv(x)
 
 class UNet(nn.Module):
-    def __init__(self, in_channels=3, out_channels=1, dropout_rate=0.0):
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1):
         super(UNet, self).__init__()
 
         # Encoder
@@ -77,7 +77,7 @@ class UNet(nn.Module):
         return self.final(x)
 
 class Auto(nn.Module):
-    def __init__(self, in_channels=3, out_channels=3, dropout_rate=0.0):
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3):
         super(Auto, self).__init__()
 
         # Encoder
@@ -125,6 +125,57 @@ class Auto(nn.Module):
 
         # Decoder
         for i in range(4):
+            x = self.upconv[i](x)
+            x = self.decoder[i](x)
+
+        # Final layer
+        return self.final(x)
+
+class Auto1(nn.Module):
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3):
+        super(Auto1, self).__init__()
+
+        # Encoder
+        self.encoder = nn.ModuleList([
+            DoubleConv(in_channels, 16, dropout_rate),
+            DoubleConv(16, 32, dropout_rate),
+            DoubleConv(32, 64, dropout_rate)
+        ])
+        self.pooldown = nn.ModuleList([
+            nn.MaxPool2d(2),
+            nn.MaxPool2d(2),
+            nn.MaxPool2d(2)
+        ])
+
+        # Bottleneck
+        self.bottleneck = DoubleConv(64, 128, dropout_rate)
+
+        # Decoder
+        self.upconv = nn.ModuleList([
+            nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
+            nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2),
+            nn.ConvTranspose2d(32, 16, kernel_size=2, stride=2)
+        ])
+        self.decoder = nn.ModuleList([ 
+            DoubleConv(64, 64, dropout_rate),   
+            DoubleConv(32, 32, dropout_rate),    
+            DoubleConv(16, 16, dropout_rate)     
+        ])
+
+        # Final layer
+        self.final = nn.Conv2d(16, out_channels, kernel_size=1)
+
+    def forward(self, x):
+        # Encoder
+        for i in range(3):
+            x = self.encoder[i](x)
+            x = self.pooldown[i](x)
+
+        # Bottleneck
+        x = self.bottleneck(x)
+
+        # Decoder
+        for i in range(3):
             x = self.upconv[i](x)
             x = self.decoder[i](x)
 
