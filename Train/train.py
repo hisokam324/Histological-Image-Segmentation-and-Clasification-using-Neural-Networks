@@ -102,16 +102,21 @@ train_loader = utils.create_loader(utils.load_images(os.path.join(DATA_PATH, dat
 validation_loader = utils.create_loader(utils.load_images(os.path.join(DATA_PATH, data_division[1]), get_mask, verbose = verbose), batch_size=batch_size)
 test_loader = utils.create_loader(utils.load_images(os.path.join(DATA_PATH, data_division[2]), get_mask, verbose = verbose), batch_size=batch_size)
 
+if use_saved_model:
+    use_saved_model = os.path.exists(os.path.join(MODEL_PATH, f"{selected_model}.pth"))
+
 model = getattr(models, model_name[0])(dropout_rate = dropout_rate)
 if use_saved_model:
     if verbose:
         print("Usando salvado")
     model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{selected_model}.pth")))
 else:
-    if len(model_name) != 1:    
-        aux = getattr(models, model_name[1])(dropout_rate = dropout_rate)
-        aux.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{model_name[1]}.pth")))
-        model.encoder.load_state_dict(aux.encoder.state_dict())
+    if len(model_name) != 1:
+        try:  
+            aux = getattr(models, model_name[1])(dropout_rate = dropout_rate)
+            aux.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{model_name[1]}.pth")))
+            model.encoder.load_state_dict(aux.encoder.state_dict())
+        except: "Modelo de transfer learning no ecnontrado"
 
 for param in model.encoder.parameters():
     param.requires_grad = False
@@ -129,7 +134,7 @@ train_losses = []
 validation_losses = []
 
 j = 0
-epoch = 0
+epoch = 1
 if verbose:
     print(f"val_loss: {best_val_loss}")
     print(f"train_loss: {best_train_loss}")
@@ -137,7 +142,7 @@ if verbose:
     start = time.time()
     i_time = time.time()
 best_epoch = epoch
-while ((epoch < n_epochs) and (j < patience)):
+while ((epoch <= n_epochs) and (j < patience)):
     train_loss = train(model, train_loader, get_mask)
     validation_loss = test(model, validation_loader, get_mask)
 
@@ -167,8 +172,7 @@ torch.save(model.state_dict(), os.path.join(MODEL_PATH, f"{selected_model}.pth")
 utils.save_json(selected_model, train_losses, validation_losses, lr, n_epochs, patience, dropout_rate, use_saved_model)
 
 if verbose:
-    print('La mejor Epoca fue {:03d}, Train loss: {:.4f}, Validation loss: {:.4f}'.format(
-              best_epoch, best_train_loss, best_val_loss))
+    print('La mejor Epoca fue {:03d}, Train loss: {:.4f}, Validation loss: {:.4f}'.format(best_epoch, best_train_loss, best_val_loss))
     end = time.time()
     elapsed = end-start
     print(f"Tiempo de ejecución: {int(elapsed // 3600)} horas, {int((elapsed // 60) % 60)} minutos, {int(elapsed % 60)} segundos")

@@ -5,7 +5,8 @@ from tqdm import tqdm
 
 def save(img_path, i, PATH, name, j, extension):
     img = cv2.imread(os.path.join(img_path, os.listdir(img_path)[i]))
-    img = cv2.resize(img, (IMG_HEIGHT, IMG_WIDTH))
+    if img.shape != (IMG_HEIGHT, IMG_WIDTH):
+        img = cv2.resize(img, (IMG_HEIGHT, IMG_WIDTH))
     if extension == "bmp":
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img1 = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)

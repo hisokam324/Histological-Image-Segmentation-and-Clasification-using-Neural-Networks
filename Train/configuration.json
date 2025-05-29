@@ -9,8 +9,20 @@
         "heigth": 256,
         "width": 256
     },
+    "train":{
+        "gpu ram": 4194304,
+        "batch size": 16,
+        "learn rate": 0.0001,
+        "epochs": 200,
+        "patience": 10,
+        "dropout": 0.0,
+        "print epoch": 5,
+        "use saved": true,
+        "verbose":true,
+        "select model": 0
+    },
     "models":{
-        "all": ["UNet", "Auto", "Transfer"],
+        "all": ["UNet", "Auto", "Transfer", "ShortUNet", "ShortAuto", "ShortTransfer"],
         "UNet":{
             "model": ["UNet"],
             "get mask": true,
@@ -29,18 +41,25 @@
             "get mask": true,
             "criterion": "BCEWithLogitsLoss",
             "optimizer": "Adam"
+        },
+        "ShortUNet":{
+            "model": ["ShortUNet"],
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam"
+        },
+        "ShortAuto":{
+            "model": ["ShortAuto"],
+            "get mask": false,
+            "criterion": "MSELoss",
+            "optimizer": "Adam",
+            "save": "auto"
+        },
+        "ShortTransfer":{
+            "model":["ShortUNet", "ShortAuto"],
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam"
         }
-    },
-    "train":{
-        "gpu ram": 4194304,
-        "batch size": 16,
-        "learn rate": 0.0001,
-        "epochs": 100,
-        "patience": 10,
-        "dropout": 0.0,
-        "print epoch": 2,
-        "use saved": false,
-        "verbose":true,
-        "select model": 0
     }
 }
