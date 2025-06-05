@@ -148,7 +148,7 @@ def save_json(selected_model, train_losses, validation_losses, lr, n_epochs, pat
     with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
         configuration = json.load(file)
 
-    JSON_PATH = configuration["path"]["json"]
+    JSON_PATH = configuration["path"]["history"]
     JSON_FILE = os.path.join(BASE_DIR, JSON_PATH, f"{selected_model}.json")
 
     if os.path.exists(JSON_FILE):
@@ -157,15 +157,13 @@ def save_json(selected_model, train_losses, validation_losses, lr, n_epochs, pat
     else:
         history = {}
 
-    history[len(history)] = {"number of epochs": n_epochs,
+    history[len(history)] = {"number of epochs": f"{len(validation_losses)}/{n_epochs}",
                     "patience": patience,
                     "learn rate": lr,
                     "dropout": dropout_rate,
                     "use saved model": use_saved_model,
-                    "train_loss": train_losses,
+                    "train loss": train_losses,
                     "validation loss" : validation_losses}
 
     with open(JSON_FILE, 'w') as file:
-        json.dump(history, file, indent=4,)
-
-    return
+        json.dump(history, file, indent=4)

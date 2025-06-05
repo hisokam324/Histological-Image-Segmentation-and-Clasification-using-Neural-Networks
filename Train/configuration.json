@@ -3,7 +3,7 @@
         "models": "models",
         "data": "dataNuInsSeg",
         "data division": ["train", "validation", "test"],
-        "json": "history"
+        "history": "history"
     },
     "image":{
         "heigth": 256,
@@ -13,10 +13,10 @@
         "gpu ram": 4194304,
         "batch size": 16,
         "learn rate": 0.0001,
-        "epochs": 200,
-        "patience": 10,
+        "epochs": 1000,
+        "patience": 25,
         "dropout": 0.0,
-        "print epoch": 5,
+        "print epoch": 10,
         "use saved": true,
         "verbose":true,
         "select model": 0

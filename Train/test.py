@@ -93,5 +93,8 @@ axs[2].set_title("Output")
 for ax in axs:
     ax.axis('off')
 
+fig.suptitle(f"{selected_model}")
+
 plt.tight_layout()
 plt.show()
+fig.savefig(os.path.join(BASE_DIR, "hito", f"{selected_model}.png"))

@@ -118,8 +118,9 @@ else:
             model.encoder.load_state_dict(aux.encoder.state_dict())
         except: "Modelo de transfer learning no ecnontrado"
 
-for param in model.encoder.parameters():
-    param.requires_grad = False
+if len(model_name) != 1:
+    for param in model.encoder.parameters():
+        param.requires_grad = False
 model.to(device)
 
 criterion = getattr(torch.nn, criterion_configuration)()
