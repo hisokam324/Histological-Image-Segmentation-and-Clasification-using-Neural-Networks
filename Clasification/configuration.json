@@ -1,0 +1,45 @@
+{
+    "path":{
+        "models": "models",
+        "general data": "Lymphoma-Dataset-main",
+        "segmentation data": "Modelling_Data",
+        "clasification data": "Optimization_Data",
+        "dataset clasification": "Clasification Dataset",
+        "dataset segmentation": "Segmentation Dataset",
+        "data division": ["train", "validation", "test"],
+        "history": "history"
+    },
+    "adapt dataset": {
+        "clasification division" : 4,
+        "segmentation division" : 2,
+        "validation" : 0.1,
+        "test": 0.1,
+        "clasification rotations": 2,
+        "segmentation rotations": 4
+    },
+    "image":{
+        "segementation": {
+            "heigth": 256,
+            "width": 256
+        },
+        "clasification": {
+            "heigth": 256,
+            "width": 256
+        }
+    },
+    "train":{
+        "gpu ram": 4194304,
+        "batch size": 16,
+        "learn rate": 0.0001,
+        "epochs": 1000,
+        "patience": 25,
+        "dropout": 0.0,
+        "print epoch": 10,
+        "use saved": true,
+        "verbose":true,
+        "select model": 0
+    },
+    "models":{
+        "all": ["UNet", "Auto", "Transfer", "ShortUNet", "ShortAuto", "ShortTransfer"]
+    }
+}

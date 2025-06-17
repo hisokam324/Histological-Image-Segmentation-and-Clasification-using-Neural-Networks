@@ -12,7 +12,7 @@ def save(img_path, i, PATH, name, j, extension):
     img1 = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
     img2 = cv2.rotate(img, cv2.ROTATE_180)
     img3 = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-
+    
     cv2.imwrite(os.path.join(PATH, name, f"{j}.{extension}"), img)
     cv2.imwrite(os.path.join(PATH, name, f"{j+1}.{extension}"), img1)
     cv2.imwrite(os.path.join(PATH, name, f"{j+2}.{extension}"), img2)
