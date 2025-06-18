@@ -19,12 +19,12 @@ def save(img, PATH, name, j, extension, rotations):
         cv2.imwrite(os.path.join(PATH, name, f"{(j*rotations)+2}.{extension}"), img2)
         cv2.imwrite(os.path.join(PATH, name, f"{(j*rotations)+3}.{extension}"), img3)
 
-def crop(img, division, mask = False):
+def crop(img, division_h, division_w, mask = False):
     out = []
     h, w = img.shape[:2]
-    hh, ww = h//division, w//division
-    for i in range(division):
-        for j in range(division):
+    hh, ww = h//division_h, w//division_w
+    for i in range(division_h):
+        for j in range(division_w):
             if mask:
                 out.append(img[hh*i:hh*(i+1), ww*j:ww*(j+1)])
             else:
@@ -42,14 +42,17 @@ with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
 
 CLASIFICATION_ROTATIONS = configuration["adapt dataset"]["clasification rotations"]
 SEGMENTATION_ROTATIONS = configuration["adapt dataset"]["segmentation rotations"]
-CLASIFICATION_DIVISION = configuration["adapt dataset"]["clasification division"]
-SEGMENTATION_DIVISION = configuration["adapt dataset"]["segmentation division"]
+CLASIFICATION_DIVISION_H = configuration["adapt dataset"]["clasification division h"]
+CLASIFICATION_DIVISION_W = configuration["adapt dataset"]["clasification division w"]
+SEGMENTATION_DIVISION_H = configuration["adapt dataset"]["segmentation division h"]
+SEGMENTATION_DIVISION_W = configuration["adapt dataset"]["segmentation division w"]
 VALIDATION_FRACTION = configuration["adapt dataset"]["validation"]
 TEST_FRACTION = configuration["adapt dataset"]["test"]
 
-VALIDATION_SPLIT = int(VALIDATION_FRACTION*(CLASIFICATION_DIVISION**2)//1+1)
-TEST_SPLIT = int(TEST_FRACTION*(CLASIFICATION_DIVISION**2)//1+1)
-TRAIN_SPLIT = CLASIFICATION_DIVISION**2-VALIDATION_SPLIT-TEST_SPLIT
+SPLISTS = CLASIFICATION_DIVISION_H*CLASIFICATION_DIVISION_W
+VALIDATION_SPLIT = int(VALIDATION_FRACTION*(SPLISTS)//1+1)
+TEST_SPLIT = int(TEST_FRACTION*(SPLISTS)//1+1)
+TRAIN_SPLIT = SPLISTS-VALIDATION_SPLIT-TEST_SPLIT
 
 GENERAL_PATH = os.path.join(BASE_DIR, configuration["path"]["general data"])
 SEGMENTATION_PATH = os.path.join(GENERAL_PATH, configuration["path"]["segmentation data"])
@@ -75,7 +78,7 @@ for image in tqdm(c_images):
     class_train = []
     clasification = c_class.loc[image]['Class']
     img = cv2.imread(os.path.join(CLASIFICATION_PATH, "Images", image))
-    cropped = crop(img, CLASIFICATION_DIVISION)
+    cropped = crop(img, CLASIFICATION_DIVISION_H, CLASIFICATION_DIVISION_W)
     for i in range(TRAIN_SPLIT):
         save(cropped[i], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0]), "Image", iter_train, "png", CLASIFICATION_ROTATIONS)
         for j in range(CLASIFICATION_ROTATIONS):
@@ -122,8 +125,8 @@ for image in tqdm(s_images):
     img  = cv2.imread(os.path.join(SEGMENTATION_PATH, "png", f"{image}.tiff.png"))
     mask  = cv2.imread(os.path.join(SEGMENTATION_PATH, "png", f"{image}.tiff_label.png"))[:,:,1]
     mask[mask > 0] = 255
-    cropped_img = crop(img, SEGMENTATION_DIVISION)
-    cropped_mask = crop(mask, SEGMENTATION_DIVISION, True)
+    cropped_img = crop(img, SEGMENTATION_DIVISION_H, SEGMENTATION_DIVISION_W)
+    cropped_mask = crop(mask, SEGMENTATION_DIVISION_H, SEGMENTATION_DIVISION_W, True)
     if segmentation_iter < train_split:
         for i in range(len(cropped_img)):
             save(cropped_img[i], os.path.join(DATASET_SEGMENTATION, DATA_DIVISION[0]), "Image", iter_train, "png", SEGMENTATION_ROTATIONS)

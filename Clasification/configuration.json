@@ -10,11 +10,13 @@
         "history": "history"
     },
     "adapt dataset": {
-        "clasification division" : 4,
-        "segmentation division" : 2,
+        "clasification division h" : 3,
+        "clasification division w" : 4,
+        "segmentation division h" : 2,
+        "segmentation division w" : 2,
         "validation" : 0.1,
         "test": 0.1,
-        "clasification rotations": 2,
+        "clasification rotations": 4,
         "segmentation rotations": 4
     },
     "image":{
