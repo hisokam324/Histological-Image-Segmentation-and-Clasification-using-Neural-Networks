@@ -1,35 +1,44 @@
 {
-    "path":{
+    "path": {
         "models": "models",
         "general data": "Lymphoma-Dataset-main",
         "segmentation data": "Modelling_Data",
-        "clasification data": "Optimization_Data",
+        "clasification data": [
+            "Optimization_Data",
+            "Testdata_Canine",
+            "Testdata_Feline"
+        ],
         "dataset clasification": "Clasification Dataset",
         "dataset segmentation": "Segmentation Dataset",
-        "data division": ["train", "validation", "test"],
+        "data division": [
+            "train",
+            "validation",
+            "test",
+            "test alter"
+        ],
         "history": "history"
     },
     "adapt dataset": {
-        "clasification division h" : 3,
-        "clasification division w" : 4,
-        "segmentation division h" : 2,
-        "segmentation division w" : 2,
-        "validation" : 0.1,
+        "clasification division h": 3,
+        "clasification division w": 4,
+        "segmentation division h": 2,
+        "segmentation division w": 2,
+        "validation": 0.1,
         "test": 0.1,
         "clasification rotations": 4,
         "segmentation rotations": 4
     },
-    "image":{
-        "segementation": {
-            "heigth": 256,
-            "width": 256
+    "image": {
+        "segmentation": {
+            "heigth": 480,
+            "width": 480
         },
         "clasification": {
-            "heigth": 256,
-            "width": 256
+            "heigth": 400,
+            "width": 400
         }
     },
-    "train":{
+    "train": {
         "gpu ram": 4194304,
         "batch size": 16,
         "learn rate": 0.0001,
@@ -38,10 +47,40 @@
         "dropout": 0.0,
         "print epoch": 10,
         "use saved": true,
-        "verbose":true,
+        "verbose": true,
         "select model": 0
     },
-    "models":{
-        "all": ["UNet", "Auto", "Transfer", "ShortUNet", "ShortAuto", "ShortTransfer"]
+    "models": {
+        "segmentation": {
+            "all": [
+                "UNet"
+            ],
+            "UNet": {
+                "model": [
+                    "UNet"
+                ],
+                "criterion": "BCEWithLogitsLoss",
+                "optimizer": "Adam"
+            }
+        },
+        "clasification": {
+            "all": [
+                "CNN", "transferCNN"
+            ],
+            "CNN": {
+                "model": [
+                    "CNN"
+                ],
+                "criterion": "CrossEntropyLoss",
+                "optimizer": "Adam"
+            },
+            "transferCNN": {
+                "model": [
+                    "CNN", "UNet"
+                ],
+                "criterion": "CrossEntropyLoss",
+                "optimizer": "Adam"
+            }
+        }
     }
 }

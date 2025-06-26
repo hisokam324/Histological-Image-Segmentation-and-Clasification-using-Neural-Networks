@@ -51,33 +51,34 @@ TEST_FRACTION = configuration["adapt dataset"]["test"]
 
 SPLISTS = CLASIFICATION_DIVISION_H*CLASIFICATION_DIVISION_W
 VALIDATION_SPLIT = int(VALIDATION_FRACTION*(SPLISTS)//1+1)
-TEST_SPLIT = int(TEST_FRACTION*(SPLISTS)//1+1)
-TRAIN_SPLIT = SPLISTS-VALIDATION_SPLIT-TEST_SPLIT
+#TEST_SPLIT = int(TEST_FRACTION*(SPLISTS)//1+1)
+#TRAIN_SPLIT = SPLISTS-VALIDATION_SPLIT-TEST_SPLIT
+TRAIN_SPLIT = SPLISTS-VALIDATION_SPLIT
 
 GENERAL_PATH = os.path.join(BASE_DIR, configuration["path"]["general data"])
 SEGMENTATION_PATH = os.path.join(GENERAL_PATH, configuration["path"]["segmentation data"])
-CLASIFICATION_PATH = os.path.join(GENERAL_PATH, configuration["path"]["clasification data"])
+CLASIFICATION_PATH_TRAIN = os.path.join(GENERAL_PATH, configuration["path"]["clasification data"][0])
+CLASIFICATION_PATH_TEST1 = os.path.join(GENERAL_PATH, configuration["path"]["clasification data"][1])
+CLASIFICATION_PATH_TEST2 = os.path.join(GENERAL_PATH, configuration["path"]["clasification data"][2])
 
 DATASET_CLASIFICATION = os.path.join(BASE_DIR, configuration["path"]["dataset clasification"])
 DATASET_SEGMENTATION = os.path.join(BASE_DIR, configuration["path"]["dataset segmentation"])
 DATA_DIVISION = configuration["path"]["data division"]
 
-c_images = os.listdir(os.path.join(CLASIFICATION_PATH, "Images"))
-c_class = pd.read_csv(os.path.join(CLASIFICATION_PATH, "Estimation.csv"), delimiter=';', index_col="File")
+c_images = os.listdir(os.path.join(CLASIFICATION_PATH_TRAIN, "Images"))
+c_class = pd.read_csv(os.path.join(CLASIFICATION_PATH_TRAIN, "Estimation.csv"), delimiter=';', index_col="File")
 s_images = os.listdir(os.path.join(SEGMENTATION_PATH, "png"))
 
 print("CLASIFICACION:")
 
 iter_train = 0
 iter_validation = 0
-iter_test = 0
 clasification_train = []
 clasification_validation = []
-clasification_test = []
 for image in tqdm(c_images):
     class_train = []
     clasification = c_class.loc[image]['Class']
-    img = cv2.imread(os.path.join(CLASIFICATION_PATH, "Images", image))
+    img = cv2.imread(os.path.join(CLASIFICATION_PATH_TRAIN, "Images", image))
     cropped = crop(img, CLASIFICATION_DIVISION_H, CLASIFICATION_DIVISION_W)
     for i in range(TRAIN_SPLIT):
         save(cropped[i], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0]), "Image", iter_train, "png", CLASIFICATION_ROTATIONS)
@@ -89,18 +90,69 @@ for image in tqdm(c_images):
         for j in range(CLASIFICATION_ROTATIONS):
             clasification_validation.append(clasification)
         iter_validation += 1
-    for i in range(TEST_SPLIT):
-        save(cropped[i+TRAIN_SPLIT+VALIDATION_SPLIT], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[2]), "Image", iter_test, "png", CLASIFICATION_ROTATIONS)
+
+h, w = cropped[0].shape[:2]
+configuration["image"]["clasification"]["heigth"] = h
+configuration["image"]["clasification"]["width"] = w
+
+clasification_train = pd.DataFrame(clasification_train, columns=["Class"])
+clasification_train.index.name = "Image"
+clasification_train.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0], "Estimation.csv"))
+clasification_validation = pd.DataFrame(clasification_validation, columns=["Class"])
+clasification_validation.index.name = "Image"
+clasification_validation.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[1], "Estimation.csv"))
+
+# Test canino
+
+c_images = os.listdir(os.path.join(CLASIFICATION_PATH_TEST1))
+aux = []
+for i in c_images:
+    if (i.find(".tiff") != -1):
+        aux.append(i)
+c_images = aux
+c_class = pd.read_csv(os.path.join(CLASIFICATION_PATH_TEST1, "Estimation.csv"), delimiter=';', index_col="File")
+
+iter_test = 0
+clasification_test = []
+for image in tqdm(c_images):
+    clasification = c_class.loc[image]['Class']
+    img = cv2.imread(os.path.join(CLASIFICATION_PATH_TEST1, image))
+    cropped = crop(img, CLASIFICATION_DIVISION_H, CLASIFICATION_DIVISION_W)
+    for i in range(len(cropped)):
+        save(cropped[i], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[2]), "Image", iter_test, "png", CLASIFICATION_ROTATIONS)
         for j in range(CLASIFICATION_ROTATIONS):
             clasification_test.append(clasification)
         iter_test += 1
 
-clasification_train = pd.DataFrame(clasification_train, columns=["Class"])
-clasification_train.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0], "Estimation.csv"))
-clasification_validation = pd.DataFrame(clasification_validation, columns=["Class"])
-clasification_validation.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[1], "Estimation.csv"))
 clasification_test = pd.DataFrame(clasification_test, columns=["Class"])
+clasification_test.index.name = "Image"
 clasification_test.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[2], "Estimation.csv"))
+
+# Test Felino
+
+c_images = os.listdir(os.path.join(CLASIFICATION_PATH_TEST2))
+aux = []
+for i in c_images:
+    if (i.find(".tiff") != -1):
+        aux.append(i)
+c_images = aux
+c_class = pd.read_csv(os.path.join(CLASIFICATION_PATH_TEST2, "Estimation.csv"), delimiter=';', index_col="File")
+
+iter_test = 0
+clasification_test = []
+for image in tqdm(c_images):
+    clasification = c_class.loc[image]['Class']
+    img = cv2.imread(os.path.join(CLASIFICATION_PATH_TEST2, image))
+    cropped = crop(img, CLASIFICATION_DIVISION_H, CLASIFICATION_DIVISION_W)
+    for i in range(len(cropped)):
+        save(cropped[i], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[3]), "Image", iter_test, "png", CLASIFICATION_ROTATIONS)
+        for j in range(CLASIFICATION_ROTATIONS):
+            clasification_test.append(clasification)
+        iter_test += 1
+
+clasification_test = pd.DataFrame(clasification_test, columns=["Class"])
+clasification_test.index.name = "Image"
+clasification_test.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[3], "Estimation.csv"))
 
 print("SEGMENTATION:")
 
@@ -144,6 +196,10 @@ for image in tqdm(s_images):
             iter_test += 1
 
     segmentation_iter += 1
-     
 
+h, w = cropped_img[0].shape[:2]
+configuration["image"]["segmentation"]["heigth"] = h
+configuration["image"]["segmentation"]["width"] = w
 
+with open(os.path.join(BASE_DIR, 'configuration.json'), 'w') as file:
+    json.dump(configuration, file, indent=4)
