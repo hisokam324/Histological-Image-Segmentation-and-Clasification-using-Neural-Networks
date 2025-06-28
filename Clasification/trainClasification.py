@@ -85,7 +85,7 @@ print_epoch = configuration["train"]["print epoch"]
 device = utils.select_device(verbose)
 if device == torch.device("cuda"):
     gpu_ram = configuration["train"]["gpu ram"]
-    batch_size = int(gpu_ram/(IMG_HEIGHT*IMG_WIDTH*2))
+    batch_size = int(gpu_ram/(IMG_HEIGHT*IMG_WIDTH))
 else:
     batch_size = configuration["train"]["batch size"]
 
@@ -109,11 +109,23 @@ else:
             aux = getattr(models, model_name[1])(dropout_rate = dropout_rate)
             aux.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{model_name[1]}.pth")))
             model.encoder.load_state_dict(aux.encoder.state_dict())
+            if hasattr(model, 'decoder'):
+                model.bottleneck.load_state_dict(aux.bottleneck.state_dict())
+                model.upconv.load_state_dict(aux.upconv.state_dict())
+                model.decoder.load_state_dict(aux.decoder.state_dict())
+                print("Decorder cargado")
         except: "Modelo de transfer learning no ecnontrado"
 
 if len(model_name) != 1:
     for param in model.encoder.parameters():
         param.requires_grad = False
+    if hasattr(model, 'decoder'):
+        for param in model.bottleneck.parameters():
+            param.requires_grad = False
+        for param in model.upconv.parameters():
+            param.requires_grad = False
+        for param in model.decoder.parameters():
+            param.requires_grad = False
 model.to(device)
 
 criterion = getattr(torch.nn, criterion_configuration)()
@@ -147,7 +159,7 @@ while ((epoch <= n_epochs) and (j < patience)):
         i_elapsed = time.time()-i_time
         
         print('Epoca: {}/{}.............'.format(epoch, n_epochs), end=' ')
-        print("Train loss: {:.4f}".format(train_loss), ", Validation loss: {:.4f}".format(validation_loss), ", best: {:.4f}".format(min(best_val_loss, validation_loss)), f", Elapsed: {int((i_elapsed // 60) % 60)} minutos, {int(i_elapsed % 60)} segundos")
+        print("Train loss: {:.4f}".format(train_loss), ", Validation loss: {:.4f}".format(validation_loss), ", best: {:.6f}".format(min(best_val_loss, validation_loss)), f", Elapsed: {int((i_elapsed // 60) % 60)} minutos, {int(i_elapsed % 60)} segundos")
         i_time = time.time()
         
     if (validation_loss <= best_val_loss):

@@ -30,6 +30,12 @@ def crop(img, division_h, division_w, mask = False):
             else:
                 out.append(img[hh*i:hh*(i+1), ww*j:ww*(j+1), :])
     return out
+
+def resize(img, factor):
+    h, w = img.shape[:2]
+    hh, ww = h//factor, w//factor
+    out = cv2.resize(img, (ww, hh))
+    return out
                   
 def cutExtention(path, cut_by = ".tiff"):
       idx = path.find(cut_by)
@@ -40,20 +46,15 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
         configuration = json.load(file)
 
-CLASIFICATION_ROTATIONS = configuration["adapt dataset"]["clasification rotations"]
-SEGMENTATION_ROTATIONS = configuration["adapt dataset"]["segmentation rotations"]
-CLASIFICATION_DIVISION_H = configuration["adapt dataset"]["clasification division h"]
-CLASIFICATION_DIVISION_W = configuration["adapt dataset"]["clasification division w"]
-SEGMENTATION_DIVISION_H = configuration["adapt dataset"]["segmentation division h"]
-SEGMENTATION_DIVISION_W = configuration["adapt dataset"]["segmentation division w"]
+
+CLASIFICATION_CLASSES = configuration["adapt dataset"]["clasification"]["classes"]
+CLASIFICATION_FACTOR = configuration["adapt dataset"]["clasification"]["factor"]
+CLASIFICATION_ROTATIONS = configuration["adapt dataset"]["clasification"]["rotations"]
+SEGMENTATION_DIVISION_H = configuration["adapt dataset"]["segmentation"]["division h"]
+SEGMENTATION_DIVISION_W = configuration["adapt dataset"]["segmentation"]["division w"]
+SEGMENTATION_ROTATIONS = configuration["adapt dataset"]["segmentation"]["rotations"]
 VALIDATION_FRACTION = configuration["adapt dataset"]["validation"]
 TEST_FRACTION = configuration["adapt dataset"]["test"]
-
-SPLISTS = CLASIFICATION_DIVISION_H*CLASIFICATION_DIVISION_W
-VALIDATION_SPLIT = int(VALIDATION_FRACTION*(SPLISTS)//1+1)
-#TEST_SPLIT = int(TEST_FRACTION*(SPLISTS)//1+1)
-#TRAIN_SPLIT = SPLISTS-VALIDATION_SPLIT-TEST_SPLIT
-TRAIN_SPLIT = SPLISTS-VALIDATION_SPLIT
 
 GENERAL_PATH = os.path.join(BASE_DIR, configuration["path"]["general data"])
 SEGMENTATION_PATH = os.path.join(GENERAL_PATH, configuration["path"]["segmentation data"])
@@ -69,31 +70,40 @@ c_images = os.listdir(os.path.join(CLASIFICATION_PATH_TRAIN, "Images"))
 c_class = pd.read_csv(os.path.join(CLASIFICATION_PATH_TRAIN, "Estimation.csv"), delimiter=';', index_col="File")
 s_images = os.listdir(os.path.join(SEGMENTATION_PATH, "png"))
 
+min_class = min(c_class['Class'].value_counts().sort_index())
+validation_split = int(max(min_class*VALIDATION_FRACTION, 1))
+train_split = min_class-validation_split
+
+
 print("CLASIFICACION:")
 
 iter_train = 0
 iter_validation = 0
 clasification_train = []
 clasification_validation = []
-for image in tqdm(c_images):
-    class_train = []
-    clasification = c_class.loc[image]['Class']
-    img = cv2.imread(os.path.join(CLASIFICATION_PATH_TRAIN, "Images", image))
-    cropped = crop(img, CLASIFICATION_DIVISION_H, CLASIFICATION_DIVISION_W)
-    for i in range(TRAIN_SPLIT):
-        save(cropped[i], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0]), "Image", iter_train, "png", CLASIFICATION_ROTATIONS)
-        for j in range(CLASIFICATION_ROTATIONS):
-            clasification_train.append(clasification)
+for i in tqdm(range(train_split)):
+    for class_x in range(CLASIFICATION_CLASSES):
+        image = c_class[c_class["Class"] == class_x].index[i]
+        img = cv2.imread(os.path.join(CLASIFICATION_PATH_TRAIN, "Images", image))
+        img = resize(img, CLASIFICATION_FACTOR)
+        save(img, os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0]), "Image", iter_train, "png", CLASIFICATION_ROTATIONS)
+        for _ in range(CLASIFICATION_ROTATIONS):
+            clasification_train.append(class_x)
         iter_train += 1
-    for i in range(VALIDATION_SPLIT):
-        save(cropped[i+TRAIN_SPLIT], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[1]), "Image", iter_validation, "png", CLASIFICATION_ROTATIONS)
-        for j in range(CLASIFICATION_ROTATIONS):
-            clasification_validation.append(clasification)
+
+for i in tqdm(range(validation_split)):
+    for class_x in range(CLASIFICATION_CLASSES):
+        image = c_class[c_class["Class"] == class_x].index[i+train_split]
+        img = cv2.imread(os.path.join(CLASIFICATION_PATH_TRAIN, "Images", image))
+        img = resize(img, CLASIFICATION_FACTOR)
+        save(img, os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[1]), "Image", iter_validation, "png", CLASIFICATION_ROTATIONS)
+        for _ in range(CLASIFICATION_ROTATIONS):
+            clasification_validation.append(class_x)
         iter_validation += 1
 
-h, w = cropped[0].shape[:2]
+h, w = img.shape[:2]
 configuration["image"]["clasification"]["heigth"] = h
-configuration["image"]["clasification"]["width"] = w
+configuration["image"]["clasification"]["width"] = w  
 
 clasification_train = pd.DataFrame(clasification_train, columns=["Class"])
 clasification_train.index.name = "Image"
@@ -117,12 +127,11 @@ clasification_test = []
 for image in tqdm(c_images):
     clasification = c_class.loc[image]['Class']
     img = cv2.imread(os.path.join(CLASIFICATION_PATH_TEST1, image))
-    cropped = crop(img, CLASIFICATION_DIVISION_H, CLASIFICATION_DIVISION_W)
-    for i in range(len(cropped)):
-        save(cropped[i], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[2]), "Image", iter_test, "png", CLASIFICATION_ROTATIONS)
-        for j in range(CLASIFICATION_ROTATIONS):
-            clasification_test.append(clasification)
-        iter_test += 1
+    img = resize(img, CLASIFICATION_FACTOR)
+    save(img, os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[2]), "Image", iter_test, "png", CLASIFICATION_ROTATIONS)
+    for _ in range(CLASIFICATION_ROTATIONS):
+        clasification_test.append(clasification)
+    iter_test += 1
 
 clasification_test = pd.DataFrame(clasification_test, columns=["Class"])
 clasification_test.index.name = "Image"
@@ -143,12 +152,11 @@ clasification_test = []
 for image in tqdm(c_images):
     clasification = c_class.loc[image]['Class']
     img = cv2.imread(os.path.join(CLASIFICATION_PATH_TEST2, image))
-    cropped = crop(img, CLASIFICATION_DIVISION_H, CLASIFICATION_DIVISION_W)
-    for i in range(len(cropped)):
-        save(cropped[i], os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[3]), "Image", iter_test, "png", CLASIFICATION_ROTATIONS)
-        for j in range(CLASIFICATION_ROTATIONS):
-            clasification_test.append(clasification)
-        iter_test += 1
+    img = resize(img, CLASIFICATION_FACTOR)
+    save(img, os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[3]), "Image", iter_test, "png", CLASIFICATION_ROTATIONS)
+    for _ in range(CLASIFICATION_ROTATIONS):
+        clasification_test.append(clasification)
+    iter_test += 1
 
 clasification_test = pd.DataFrame(clasification_test, columns=["Class"])
 clasification_test.index.name = "Image"

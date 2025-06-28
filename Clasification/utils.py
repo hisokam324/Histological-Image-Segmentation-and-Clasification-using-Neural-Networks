@@ -148,7 +148,9 @@ def test_similarity(model, loader, device = "cuda", verbose = True):
     return np.mean(dices), np.mean(jaccards)
 
 def test_clasification(model, loader, device = "cuda", verbose = True):
+    ceros = 0
     ones = 0
+    twos = 0
     correct = 0
     total = 0
     model.eval()
@@ -161,9 +163,13 @@ def test_clasification(model, loader, device = "cuda", verbose = True):
                 total += 1
                 if (torch.argmax(outputs[i]).item() == targets[i].item()):
                     correct += 1
+                if (torch.argmax(outputs[i]).item() == 0):
+                    ceros += 1
                 if (torch.argmax(outputs[i]).item() == 1):
                     ones += 1
-    return correct/total, ones/total
+                if (torch.argmax(outputs[i]).item() == 2):
+                    twos += 1
+    return correct/total, ceros/total, ones/total, twos/total
 
 def save_json(selected_model, train_losses, validation_losses, lr, n_epochs, patience, dropout_rate, use_saved_model):
 

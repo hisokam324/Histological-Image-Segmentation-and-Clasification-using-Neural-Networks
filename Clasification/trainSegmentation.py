@@ -85,7 +85,7 @@ print_epoch = configuration["train"]["print epoch"]
 device = utils.select_device(verbose)
 if device == torch.device("cuda"):
     gpu_ram = configuration["train"]["gpu ram"]
-    batch_size = int(gpu_ram/(IMG_HEIGHT*IMG_WIDTH))
+    batch_size = int(0.9*gpu_ram/(IMG_HEIGHT*IMG_WIDTH))
 else:
     batch_size = configuration["train"]["batch size"]
 

@@ -19,14 +19,18 @@
         "history": "history"
     },
     "adapt dataset": {
-        "clasification division h": 3,
-        "clasification division w": 4,
-        "segmentation division h": 2,
-        "segmentation division w": 2,
+        "clasification": {
+            "factor": 2,
+            "classes": 3,
+            "rotations": 2
+        },
+        "segmentation": {
+            "division h": 2,
+            "division w": 2,
+            "rotations": 4
+        },
         "validation": 0.1,
-        "test": 0.1,
-        "clasification rotations": 4,
-        "segmentation rotations": 4
+        "test": 0.1
     },
     "image": {
         "segmentation": {
@@ -34,8 +38,8 @@
             "width": 480
         },
         "clasification": {
-            "heigth": 400,
-            "width": 400
+            "heigth": 600,
+            "width": 800
         }
     },
     "train": {
@@ -65,7 +69,10 @@
         },
         "clasification": {
             "all": [
-                "CNN", "transferCNN"
+                "CNN",
+                "TransferCNN",
+                "UNetClas",
+                "TransferUNetClas"
             ],
             "CNN": {
                 "model": [
@@ -74,9 +81,25 @@
                 "criterion": "CrossEntropyLoss",
                 "optimizer": "Adam"
             },
-            "transferCNN": {
+            "TransferCNN": {
                 "model": [
-                    "CNN", "UNet"
+                    "CNN",
+                    "UNet"
+                ],
+                "criterion": "CrossEntropyLoss",
+                "optimizer": "Adam"
+            },
+            "UNetClas": {
+                "model": [
+                    "UNetClas"
+                ],
+                "criterion": "CrossEntropyLoss",
+                "optimizer": "Adam"
+            },
+            "TransferUNetClas": {
+                "model": [
+                    "UNetClas",
+                    "UNet"
                 ],
                 "criterion": "CrossEntropyLoss",
                 "optimizer": "Adam"
