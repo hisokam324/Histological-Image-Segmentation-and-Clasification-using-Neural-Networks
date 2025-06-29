@@ -1,0 +1,46 @@
+# Core Python packages
+numpy==1.26.4
+pandas==2.0.3
+scipy==1.10.1
+matplotlib==3.8.1
+scikit-image==0.20.0
+opencv-python==4.8.0.76
+pillow==10.2.0
+
+# PyTorch and related packages (compatible con Python 3.12)
+--extra-index-url https://download.pytorch.org/whl/cu117
+torch==2.1.0+cu117
+torchvision==0.16.1+cu117
+torchaudio==2.1.0+cu117
+
+timm==0.6.13
+efficientnet-pytorch==0.6.3
+segmentation-models-pytorch==0.2.1
+
+# Utility and logging
+tqdm==4.66.0
+pyyaml==6.0.1
+
+# TensorBoard for logging
+tensorboard==2.16.2
+tensorboard-data-server==0.7.2
+
+# JupyterLab (optional for notebooks)
+jupyterlab==4.1.5
+ipykernel==6.28.0
+ipython==8.15.0
+
+# Required for Jupyter and nbconvert
+notebook-shim==0.2.3
+nbclient==0.8.0
+nbconvert==7.10.0
+nbformat==5.9.2
+
+# Optional visualization
+imageio==2.34.0
+pywavelets==1.5.0
+tifffile==2024.2.12
+
+# For HTTP requests
+requests==2.31.0
+httpx==0.26.0
