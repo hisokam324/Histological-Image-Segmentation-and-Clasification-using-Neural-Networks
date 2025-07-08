@@ -5,6 +5,9 @@ from skimage.io import imread, imshow
 import matplotlib.pyplot as plt
 import json
 
+"""
+Este codigo grafica cosas
+"""
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(BASE_DIR, 'configuration.json')) as file:

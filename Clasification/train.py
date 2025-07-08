@@ -6,6 +6,9 @@ import utils
 import models
 
 def train(model,loader):
+    """
+    Train method
+    """
     total_loss = 0.0
     for data in loader:
         model.train()
@@ -26,6 +29,9 @@ def train(model,loader):
 
 
 def test(model,loader):
+    """
+    Test method
+    """
     model.eval()
     total_loss = 0.0
     for data in loader:
