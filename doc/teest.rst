@@ -1,4 +1,4 @@
-teest
+teest module
 ============
 
 .. automodule:: teest

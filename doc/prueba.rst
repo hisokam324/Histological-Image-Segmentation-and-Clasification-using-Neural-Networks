@@ -1,4 +1,4 @@
-prueba
+prueba module
 =============
 
 .. automodule:: prueba
