@@ -45,6 +45,7 @@ lr = configuration["train"]["learn rate"]
 n_epochs = configuration["train"]["epochs"]
 patience = configuration["train"]["patience"]
 print_epoch = configuration["train"]["print epoch"]
+n_classes = configuration["adapt dataset"]["clasification"]["classes"]
 
 device = utils.select_device(verbose)
 if device == torch.device("cuda"):
@@ -54,15 +55,15 @@ else:
     batch_size = configuration["train"]["batch size"]
 
 
-model = getattr(models, model_name[0])(dropout_rate= dropout_rate)
+model = getattr(models, model_name[0])(dropout_rate = dropout_rate, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
 
 model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{selected_model}.pth")))
 model.to(device)
 
 test = utils.create_loader(utils.load_images(os.path.join(DATA_PATH, data_division[0]), isClasification = True, verbose = verbose), batch_size = batch_size, isClasification = True)
-print(f"Test Canine: {utils.test_clasification(model, test)}")
+print(f"Test Train: {utils.test_clasification(model, test)}")
 test = utils.create_loader(utils.load_images(os.path.join(DATA_PATH, data_division[1]), isClasification = True, verbose = verbose), batch_size = batch_size, isClasification = True)
-print(f"Test Canine: {utils.test_clasification(model, test)}")
+print(f"Test Validation: {utils.test_clasification(model, test)}")
 test = utils.create_loader(utils.load_images(os.path.join(DATA_PATH, data_division[2]), isClasification = True, verbose = verbose), batch_size = batch_size, isClasification = True)
 print(f"Test Canine: {utils.test_clasification(model, test)}")
 test = utils.create_loader(utils.load_images(os.path.join(DATA_PATH, data_division[3]), isClasification = True, verbose = verbose), batch_size = batch_size, isClasification = True)

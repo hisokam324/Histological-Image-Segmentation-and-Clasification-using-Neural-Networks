@@ -11,6 +11,7 @@ def train(model,loader):
         model.train()
         inputs, targets = data
         inputs = inputs.to(device)
+        targets = targets.long()
         targets = targets.to(device)
 
         optimizer.zero_grad()
@@ -30,6 +31,7 @@ def test(model,loader):
     for data in loader:
         inputs, targets = data
         inputs = inputs.to(device)
+        targets = targets.long()
         targets = targets.to(device)
 
         with torch.no_grad():

@@ -47,10 +47,10 @@
         "batch size": 16,
         "learn rate": 0.0001,
         "epochs": 1000,
-        "patience": 25,
+        "patience": 50,
         "dropout": 0.0,
         "print epoch": 10,
-        "use saved": true,
+        "use saved": false,
         "verbose": true,
         "select model": 0
     },
