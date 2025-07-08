@@ -1,7 +1,7 @@
-teest copy module
+pruebaCopy module
 =================
 
-.. automodule:: teest copy
+.. automodule:: pruebaCopy
    :members:
    :show-inheritance:
    :undoc-members:

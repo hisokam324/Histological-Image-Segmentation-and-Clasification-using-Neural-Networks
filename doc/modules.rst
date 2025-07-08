@@ -6,6 +6,6 @@ src
 
    alibaba
    prueba
-   prueba copy
+   pruebaCopy
    teest
-   teest copy
+   teestCopy
