@@ -1,41 +1,17 @@
 """
-Esto es sencillamente una prueba
+Se implementan dos funciones basicas
 """
-import matplotlib.pyplot as plt
 
-def calcular(x):
+def get_empty():
     """
-    Metodo de calculo correcto
+    Esta funcion no pide nada y devuelve una lista vacia
     """
-    y = (x-5+1)//2
-    y = (y-5+1)//2
-    return y
+    out = []
+    return out
 
-def calcular2(x):
+def triplicate(input):
     """
-    Metodo alternativo a probar
+    Esta funcion pide un input y lo multiplica por 3
     """
-    return x//4-3
-
-def main():
-    """
-    Cuerpo
-    """
-    X = []
-    Y = []
-    Z = []
-
-    for i in range(32):
-        X.append(i)
-        Y.append(calcular(i))
-        Z.append(calcular2(i))
-
-    plt.figure()
-    plt.plot(X, Y, label = "Y")
-    plt.plot(X, Z, label = "Z")
-    plt.legend()
-    plt.show()
-    return
-
-#if __name__ == "__main__":
-#    main()
+    out = input*3
+    return out
