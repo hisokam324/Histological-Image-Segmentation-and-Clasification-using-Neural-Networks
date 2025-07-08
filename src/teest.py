@@ -35,6 +35,7 @@ def main():
     plt.plot(X, Z, label = "Z")
     plt.legend()
     plt.show()
+    return
 
 #if __name__ == "__main__":
 #    main()
