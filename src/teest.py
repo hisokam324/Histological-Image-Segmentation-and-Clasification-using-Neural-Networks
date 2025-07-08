@@ -9,9 +9,9 @@ def get_empty():
     out = []
     return out
 
-def triplicate(input):
+def cuadriplicate(input):
     """
-    Esta funcion pide un input y lo multiplica por 3
+    Esta funcion pide un input y lo multiplica por 4
     """
-    out = input*3
+    out = input*4
     return out
