@@ -1,8 +1,7 @@
-import matplotlib.pyplot as plt
-
 """
 Esto es sencillamente una prueba
 """
+import matplotlib.pyplot as plt
 
 def calcular(x):
     """
