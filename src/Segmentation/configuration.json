@@ -1,0 +1,65 @@
+{
+    "path":{
+        "models": "models",
+        "data": "dataNuInsSeg",
+        "data division": ["train", "validation", "test"],
+        "history": "history"
+    },
+    "image":{
+        "height": 256,
+        "width": 256
+    },
+    "train":{
+        "gpu ram": 4194304,
+        "batch size": 16,
+        "learn rate": 0.0001,
+        "epochs": 100,
+        "patience": 10,
+        "dropout": 0.0,
+        "print epoch": 5,
+        "use saved": true,
+        "verbose":true,
+        "select model": 0
+    },
+    "models":{
+        "all": ["UNet", "Auto", "Transfer", "ShortUNet", "ShortAuto", "ShortTransfer"],
+        "UNet":{
+            "model": ["UNet"],
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam"
+        },
+        "Auto":{
+            "model": ["Auto"],
+            "get mask": false,
+            "criterion": "MSELoss",
+            "optimizer": "Adam",
+            "save": "auto"
+        },
+        "Transfer":{
+            "model":["UNet", "Auto"],
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam"
+        },
+        "ShortUNet":{
+            "model": ["ShortUNet"],
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam"
+        },
+        "ShortAuto":{
+            "model": ["ShortAuto"],
+            "get mask": false,
+            "criterion": "MSELoss",
+            "optimizer": "Adam",
+            "save": "auto"
+        },
+        "ShortTransfer":{
+            "model":["ShortUNet", "ShortAuto"],
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam"
+        }
+    }
+}
