@@ -19,7 +19,7 @@ class DoubleConv(nn.Module):
         return self.double_conv(x)
 
 class UNet(nn.Module):
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1):
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=9, img_heigth=28, img_width=28):
         super(UNet, self).__init__()
 
         # Encoder
@@ -78,7 +78,7 @@ class UNet(nn.Module):
         return self.final(x)
 
 class Auto(nn.Module):
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3):
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3, out_classes=9, img_heigth=28, img_width=28):
         super(Auto, self).__init__()
 
         # Encoder
@@ -133,7 +133,7 @@ class Auto(nn.Module):
         return self.final(x)
 
 class ShortUNet(nn.Module):
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1):
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=9, img_heigth=28, img_width=28):
         super(ShortUNet, self).__init__()
 
         # Encoder
@@ -188,7 +188,7 @@ class ShortUNet(nn.Module):
         return self.final(x)
 
 class ShortAuto(nn.Module):
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3):
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3, out_classes=9, img_heigth=28, img_width=28):
         super(ShortAuto, self).__init__()
 
         # Encoder
@@ -238,10 +238,12 @@ class ShortAuto(nn.Module):
         # Final layer
         return self.final(x)
 
-class UNetO(nn.Module):
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1):
-        super(UNet, self).__init__()
-
+class CNN(nn.Module):
+    def __init__(self, dropout_rate=0.0, in_channels=1, out_classes=9, img_heigth=28, img_width=28):
+        super(CNN, self).__init__()
+        self.img_heigth = (img_heigth//16)*16
+        self.img_width = (img_width//16)*16
+        
         # Encoder
         self.encoder = nn.ModuleList([
             DoubleConv(in_channels, 16, dropout_rate),
@@ -259,40 +261,63 @@ class UNetO(nn.Module):
         # Bottleneck
         self.bottleneck = DoubleConv(128, 256, dropout_rate)
 
-        # Decoder
-        self.upconv = nn.ModuleList([
-            nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),
-            nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
-            nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2),
-            nn.ConvTranspose2d(32, 16, kernel_size=2, stride=2)
-        ])
-        self.decoder = nn.ModuleList([
-            DoubleConv(256, 128, dropout_rate),  # concat de c4 + u6
-            DoubleConv(128, 64, dropout_rate),   # concat de c3 + u7
-            DoubleConv(64, 32, dropout_rate),    # concat de c2 + u8
-            DoubleConv(32, 16, dropout_rate)     # concat de c1 + u9
-        ])
-
-        # Final layer
-        self.final = nn.Conv2d(16, out_channels, kernel_size=1)
+        # Fully connected layers
+        self.fc = nn.Sequential(
+            nn.Linear(self.img_heigth*self.img_width, out_classes*out_classes),
+            nn.ReLU(inplace=True),
+            nn.Linear(out_classes*out_classes, out_classes)
+            )
 
     def forward(self, x):
         # Encoder
-        skips = []
         for i in range(4):
             x = self.encoder[i](x)
-            skips.append(x)
             x = self.pooldown[i](x)
 
         # Bottleneck
         x = self.bottleneck(x)
 
-        # Decoder
-        for i in range(4):
-            x = self.upconv[i](x)
-            skip = skips[-(i+1)]
-            x = torch.cat([skip, x], dim=1)
-            x = self.decoder[i](x)
+        # Classification head
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
 
-        # Final layer
-        return self.final(x)
+        return x
+
+class NetCNN(nn.Module):
+
+    def __init__(self, dropout_rate = 0.0, out_classes=9, img_heigth=28, img_width=28):
+        self.img_heigth = img_heigth//4-3
+        self.img_width = img_width//4-3
+        super(NetCNN, self).__init__()
+        self.conv1 = nn.Conv2d(1, 6, 5)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16*self.img_heigth*self.img_width, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, out_classes)
+
+    def forward(self, x):
+        x = nn.ReLU(self.conv1(x))
+        x = nn.MaxPool2d(x, 2)
+        x = nn.ReLU(self.conv2(x))
+        x = nn.MaxPool2d(x, 2)
+        # Al pasar de capa convolucional a capa totalmente conectada, tenemos
+        # que reformatear la salida para que se transforme en un vector unidimensional
+        x = x.view(-1, 16*self.img_heigth*self.img_width)
+        x = nn.ReLU(self.fc1(x))
+        x = nn.ReLU(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+class NetMLP(torch.nn.Module):
+    def __init__(self, dropout_rate = 0.0, out_classes=9, img_heigth=28, img_width=28, hidden_layer = 15):
+        super(NetMLP, self).__init__()
+        self.hidden1 = nn.Linear(img_heigth*img_width, hidden_layer)
+        self.hidden2 = nn.Linear(hidden_layer, hidden_layer)
+        self.out = nn.Linear(hidden_layer, out_classes)
+
+    def forward(self, x):
+        x = x.view(x.size(0), -1)
+        x = nn.ReLU(self.hidden1(x))
+        x = nn.ReLU(self.hidden2(x))
+        x = self.out(x)
+        return x

@@ -20,50 +20,64 @@ class SignalDataset(Dataset):
     def __getitem__(self, idx):
         return self.X[idx], self.Y[idx]
 
-def select_device(verbose = True):
+def select_device():
+    """
+    Funcion auxiliar que identifica la presencia de grafica para realizar los calculos
+    """
     is_cuda = torch.cuda.is_available()
 
     if is_cuda:
-        device = torch.device("cuda")
-        if verbose:
-            print("GPU disponible")
+        device = "cuda"
     else:
-        device = torch.device("cpu")
-        if verbose:
-            print("GPU no disponible, usando CPU")
+        device = "cpu"
     
     return device
 
-def load_images(DATA_PATH = "data_y", getMask = True, verbose = True, IMG_CHANNELS = 3):
-    pass
-
 def create_loader(data, batch_size = 64):
+    """
+    Funcion auxiliar que crea un loader a partir de data con formato (input, target). Los loaders se crean con un batch size especificado
+    """
     X, Y = data
     set = SignalDataset(X, Y)
     loader = DataLoader(set, batch_size=batch_size, shuffle=False, num_workers=0)
     return loader
 
-def save_json(HISTORY_PATH, selected_model, train_losses, validation_losses, lr, n_epochs, patience, dropout_rate):
-
+def save_json(BASE_DIR, configuration, selected_model, train_losses, validation_losses):
+    """
+    Funcion que salva los resultados obteidos del entrenamiento en un json
+    """
+    # Carga de datos importantes
+    HISTORY_PATH = os.path.join(BASE_DIR, configuration["path"]["history"])
+    lr = configuration["train"]["learn rate"]
+    n_epochs = configuration["train"]["epochs"]
+    patience = configuration["train"]["patience"]
+    dropout_rate = configuration["train"]["dropout"]
+    # Encontrar Json de modelo
     JSON_FILE = os.path.join(HISTORY_PATH, f"{selected_model}.json")
-
+    # Checkear existencia
     if os.path.exists(JSON_FILE):
         with open(JSON_FILE) as file:
             history = json.load(file)  
     else:
         history = {}
 
+    # Agregar informacion
     history[len(history)] = {"number of epochs": f"{len(validation_losses)}/{n_epochs}",
                     "patience": patience,
                     "learn rate": lr,
                     "dropout": dropout_rate,
                     "train loss": train_losses,
                     "validation loss" : validation_losses}
-
+    #Guardar
     with open(JSON_FILE, 'w') as file:
         json.dump(history, file, indent=4)
 
-def select_model(model_options, configuration, verbose):
+def select_model(configuration):
+    """
+    Funcion auxiliar para seleccionar el modelo a utilizar
+    """
+    verbose = configuration["train"]["verbose"]
+    model_options = configuration["models"]["all"]
     if verbose:
         selecting_model = True
         while selecting_model:
@@ -85,6 +99,10 @@ def select_model(model_options, configuration, verbose):
     return selected_model
 
 def train(model, loader, isClasification, get_mask, optimizer, criterion, device):
+    """
+    Funcion de entrenamiento basica
+    (Considera los posibles tipos de entrenamientos esperados, reconstruccion, segmentacion y clasificacion)
+    """
     total_loss = 0.0
     for data in loader:
         model.train()
@@ -92,12 +110,10 @@ def train(model, loader, isClasification, get_mask, optimizer, criterion, device
         inputs = inputs.to(device)
         if isClasification:
             targets = targets.squeeze().long()
-            targets.to(device)
         else:
             if get_mask:
-                targets = targets.to(device).unsqueeze(1)
-            else:
-                targets = targets.to(device)
+                targets = targets.unsqueeze(1)
+        targets = targets.to(device)
 
         optimizer.zero_grad()
 
@@ -111,6 +127,10 @@ def train(model, loader, isClasification, get_mask, optimizer, criterion, device
 
 
 def test(model, loader, isClasification, get_mask, criterion, device):
+    """
+    Funcion de testeo durante entrenamiento basica
+    (Considera los posibles tipos de entrenamientos esperados, reconstruccion, segmentacion y clasificacion)
+    """
     model.eval()
     total_loss = 0.0
     for data in loader:
@@ -118,12 +138,11 @@ def test(model, loader, isClasification, get_mask, criterion, device):
         inputs = inputs.to(device)
         if isClasification:
             targets = targets.squeeze().long()
-            targets.to(device)
+            
         else:
             if get_mask:
                 targets = targets.to(device).unsqueeze(1)
-            else:
-                targets = targets.to(device)
+        targets = targets.to(device)
         with torch.no_grad():
             outputs = model(inputs)
             loss = criterion(outputs, targets)
@@ -131,33 +150,52 @@ def test(model, loader, isClasification, get_mask, criterion, device):
     total_loss/= len(loader.dataset)
     return total_loss
 
-def set_model(selected_model, configuration, BASE_DIR, verbose):
+def set_train(configuration):
+    """
+    Funcion para obtener el device y batch size del entrenamiento
+    """
+    IMG_HEIGHT = configuration["image"]["height"]
+    IMG_WIDTH = configuration["image"]["width"]
+    verbose = configuration["train"]["verbose"]
+
+    device = select_device()
+    if verbose:
+        print(f"Utilizando {device}")
+    configuration["train"]["device"] = device
+    
+    # Select Batch Size
+    if device == "cuda":
+        gpu_ram = configuration["train"]["gpu ram"]
+        configuration["train"]["batch size"] = gpu_ram//(IMG_HEIGHT*IMG_WIDTH)
+    if verbose:
+        print(f"batch size: {configuration["train"]["batch size"]}")
+    
+    return configuration
+
+def set_model(BASE_DIR, configuration, selected_model):
+    """
+    Fucnion para obtener el modelo con todos sus parametros seteados
+    """
     MODEL_PATH = os.path.join(BASE_DIR, configuration["path"]["models"])
     IMG_HEIGHT = configuration["image"]["height"]
     IMG_WIDTH = configuration["image"]["width"]
-    get_mask = configuration["models"][selected_model]["get mask"]
     model_name = configuration["models"][selected_model]["model"]
     criterion_configuration = configuration["models"][selected_model]["criterion"]
     optimizer_configuration = configuration["models"][selected_model]["optimizer"]
+    verbose = configuration["train"]["verbose"]
+    device = configuration["train"]["device"]
+    n_classes = configuration["train"]["classes"]
     use_saved_model = configuration["train"]["use saved"]
     dropout_rate = configuration["train"]["dropout"]
     lr = configuration["train"]["learn rate"]
-    
 
-    device = select_device(verbose)
-    if device == torch.device("cuda"):
-        gpu_ram = configuration["train"]["gpu ram"]
-        batch_size = int(gpu_ram/(IMG_HEIGHT*IMG_WIDTH))
-    else:
-        batch_size = configuration["train"]["batch size"]
-    
     if verbose:
-        print(f"batch size: {batch_size}")
+        print(f"Modelo: {selected_model}")
     
     if use_saved_model:
         use_saved_model = os.path.exists(os.path.join(MODEL_PATH, f"{selected_model}.pth"))
 
-    model = getattr(models, model_name[0])(dropout_rate = dropout_rate)
+    model = getattr(models, model_name[0])(dropout_rate = dropout_rate, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
     if use_saved_model:
         if verbose:
             print("Usando salvado")
@@ -165,7 +203,7 @@ def set_model(selected_model, configuration, BASE_DIR, verbose):
     else:
         if len(model_name) != 1:
             try:  
-                aux = getattr(models, model_name[1])(dropout_rate = dropout_rate)
+                aux = getattr(models, model_name[1])(dropout_rate = dropout_rate, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
                 aux.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{model_name[1]}.pth")))
                 model.encoder.load_state_dict(aux.encoder.state_dict())
             except: "Modelo de transfer learning no ecnontrado"
@@ -178,16 +216,21 @@ def set_model(selected_model, configuration, BASE_DIR, verbose):
     criterion = getattr(torch.nn, criterion_configuration)()
     optimizer = getattr(torch.optim, optimizer_configuration)(model.parameters(), lr=lr)
 
-    return model, MODEL_PATH, dropout_rate, device, get_mask, lr, criterion, optimizer, batch_size
+    return model, criterion, optimizer
 
-def set_train(configuration):
+def train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criterion, train_loader, validation_loader):
+    """
+    Bucle de entrenamiento principal
+    """
+    MODEL_PATH = os.path.join(BASE_DIR, configuration["path"]["models"])
+    isClasification = configuration["train"]["is clasification"]
+    verbose = configuration["train"]["verbose"]
+    device = configuration["train"]["device"]
     n_epochs = configuration["train"]["epochs"]
     patience = configuration["train"]["patience"]
+    dropout_rate = configuration["train"]["dropout"]
     print_epoch = configuration["train"]["print epoch"]
-
-    return n_epochs, patience, print_epoch
-
-def train_loop(selected_model, MODEL_PATH, model, optimizer, criterion, train_loader, validation_loader, n_epochs, patience, dropout_rate, lr, device, isClasification, get_mask, HISTORY_PATH, verbose, print_epoch):
+    get_mask = configuration["models"][selected_model]["get mask"]
     best_val_loss = test(model, validation_loader, isClasification, get_mask, criterion, device)
     best_train_loss = test(model, train_loader, isClasification, get_mask, criterion, device)
 
@@ -230,7 +273,7 @@ def train_loop(selected_model, MODEL_PATH, model, optimizer, criterion, train_lo
 
     model.load_state_dict(selected_model_state_dict)
     torch.save(model.state_dict(), os.path.join(MODEL_PATH, f"{selected_model}.pth"))
-    save_json(HISTORY_PATH, selected_model, train_losses, validation_losses, lr, n_epochs, patience, dropout_rate)
+    save_json(BASE_DIR, configuration, selected_model, train_losses, validation_losses)
 
     if verbose:
         print('La mejor Epoca fue {:03d}, Train loss: {:.4f}, Validation loss: {:.4f}'.format(best_epoch, best_train_loss, best_val_loss))
@@ -240,16 +283,87 @@ def train_loop(selected_model, MODEL_PATH, model, optimizer, criterion, train_lo
 
     return model
 
-def graph(BASE_DIR):
-    with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
-        configuration = json.load(file)
+def separate(configuration):
+    """
+    Funcion auxiliar para separar los entrenamientos sin y con mascara
+    """
+    auto = []
+    segmentation = []
 
     model_options = configuration["models"]["all"]
 
     for selected_model in model_options:
+        if configuration["models"][selected_model]["get mask"]:
+            segmentation.append(selected_model)
+        else:
+            auto.append(selected_model)
+    
+    return auto, segmentation
 
-        JSON_PATH = configuration["path"]["history"]
-        JSON_FILE = os.path.join(BASE_DIR, JSON_PATH, f"{selected_model}.json")
+def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
+    HITO_DIR = configuration["path"]["hito"]
+    verbose = configuration["train"]["verbose"]
+    device = configuration["train"]["device"]
+    batch_size = configuration["train"]["batch size"]
+    idx = configuration["test"]["idx"]
+    get_mask = configuration["models"][selected_model]["get mask"]
+    
+    idx_loader = idx//batch_size
+    idx = idx % batch_size
+    try:
+        model.eval()
+        i = 0
+        for data in loader:
+            if i == idx_loader:
+                inputs, targets = data
+                with torch.no_grad():
+                    outputs = model(inputs.to(device))
+                input = inputs[idx]
+                output = outputs[idx]
+                target = targets[idx]
+            i += 1
+        input_image = input.permute(1, 2, 0).cpu().numpy()/255
+        if get_mask:
+            target_image = target.squeeze().cpu().numpy()/255
+            output_image = output.squeeze().cpu().numpy()/255
+        else:
+            target_image = target.permute(1, 2, 0).cpu().numpy()/255
+            output_image = output.permute(1, 2, 0).cpu().numpy()/255
+        fig, axs = plt.subplots(1, 3, figsize=(12, 4))
+        axs[0].imshow(input_image)
+        axs[0].set_title("Input")
+
+        axs[1].imshow(target_image, cmap='gray' if get_mask else None)
+        axs[1].set_title("Truth")
+
+        axs[2].imshow(output_image, cmap='gray' if get_mask else None)
+        axs[2].set_title("Output")
+
+        for ax in axs:
+            ax.axis('off')
+
+        fig.suptitle(f"{selected_model}")
+
+        plt.tight_layout()
+        if verbose:
+            plt.show()
+        fig.savefig(os.path.join(BASE_DIR, HITO_DIR, f"{selected_model}.png"))
+    except: print("Imagen exede el batch")
+
+def graph(BASE_DIR):
+    """
+    Funcion auxiliar encargada de graficar la evolucion del ultimo entrenamiento realizado de cada modelo
+    """
+    with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
+        configuration = json.load(file)
+
+    model_options = configuration["models"]["all"]
+    HISTORY_PATH = configuration["path"]["history"]
+    HITO_PATH = configuration["path"]["hito"]
+
+    for selected_model in model_options:
+
+        JSON_FILE = os.path.join(BASE_DIR, HISTORY_PATH, f"{selected_model}.json")
 
         if os.path.exists(JSON_FILE):
 
@@ -267,7 +381,7 @@ def graph(BASE_DIR):
             plt.title(f"Loss {selected_model}")
             plt.legend()
 
-            plt.savefig(os.path.join(BASE_DIR, "hito", f"{selected_model}_loss.png"))
+            plt.savefig(os.path.join(BASE_DIR, HITO_PATH, f"{selected_model}_loss.png"))
 
         else:
             print(f"json file {JSON_FILE} not found")

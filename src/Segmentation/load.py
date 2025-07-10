@@ -17,51 +17,41 @@ def load_images(DATA_PATH, configuration, getMask = True, verbose = True, IMG_CH
 
     if verbose:
         print("imagenes")
-        for n in tqdm(range(len(image_ids)), total=len(image_ids)):
-            img = imread(os.path.join(IMAGE_PATH, image_ids[n]))
-            X[n] = img
-        
-        X = X.transpose(0, 3, 1, 2)
+    for n in tqdm(range(len(image_ids)), total=len(image_ids), disable= not verbose):
+        img = imread(os.path.join(IMAGE_PATH, image_ids[n]))
+        X[n] = img
+    
+    X = X.transpose(0, 3, 1, 2)
 
-        if getMask:
+    if getMask:
+        if verbose:
             print("mascaras")
-            MASK_PATH = os.path.join(DATA_PATH, "Mask")
-            mask_ids = sorted(os.listdir(MASK_PATH))
-            Y = np.zeros((len(mask_ids), IMG_HEIGHT, IMG_WIDTH), dtype=bool)
+        MASK_PATH = os.path.join(DATA_PATH, "Mask")
+        mask_ids = sorted(os.listdir(MASK_PATH))
+        Y = np.zeros((len(mask_ids), IMG_HEIGHT, IMG_WIDTH), dtype=bool)
 
-            for n in tqdm(range(len(mask_ids)), total=len(mask_ids)):
-                mask = imread(os.path.join(MASK_PATH, mask_ids[n]))
-                Y[n] = mask
-            
-            return (X, Y)
-        else:
-            return (X, X)
-    else:
-        for n in range(len(image_ids)):
-            img = imread(os.path.join(IMAGE_PATH, image_ids[n]))
-            X[n] = img
+        for n in tqdm(range(len(mask_ids)), total=len(mask_ids), disable=not verbose):
+            mask = imread(os.path.join(MASK_PATH, mask_ids[n]))
+            Y[n] = mask
         
-        X = X.transpose(0, 3, 1, 2)
+        return (X, Y)
+    else:
+        return (X, X)
+    
 
-        if getMask:
-            MASK_PATH = os.path.join(DATA_PATH, "Mask")
-            mask_ids = sorted(os.listdir(MASK_PATH))
-            Y = np.zeros((len(mask_ids), IMG_HEIGHT, IMG_WIDTH), dtype=bool)
-
-            for n in range(len(mask_ids)):
-                mask = imread(os.path.join(MASK_PATH, mask_ids[n]))
-                Y[n] = mask
-            
-            return (X, Y)
-        else:
-            return (X, X)
-
-def get_loaders(BASE_DIR, configuration, get_mask, batch_size, verbose):
+def get_loaders(BASE_DIR, configuration, selected_model, toLoad = [True, True, False]):
     DATA_PATH = os.path.join(BASE_DIR,configuration["path"]["data"])
     data_division = configuration["path"]["data division"]
+    batch_size = configuration["train"]["batch size"]
+    verbose = configuration["train"]["verbose"]
+    get_mask = configuration["models"][selected_model]["get mask"]
 
-    train_loader = utils.create_loader(load_images(os.path.join(DATA_PATH, data_division[0]), configuration, get_mask, verbose = verbose), batch_size=batch_size)
-    validation_loader = utils.create_loader(load_images(os.path.join(DATA_PATH, data_division[1]), configuration, get_mask, verbose = verbose), batch_size=batch_size)
-    test_loader = utils.create_loader(load_images(os.path.join(DATA_PATH, data_division[2]), configuration, get_mask, verbose = verbose), batch_size=batch_size)
+    loaders = []
 
-    return train_loader, validation_loader, test_loader
+    for i in range(len(toLoad)):
+        if toLoad[i]:
+            loaders.append(utils.create_loader(load_images(os.path.join(DATA_PATH, data_division[i]), configuration, get_mask, verbose = verbose), batch_size=batch_size))
+        else:
+            loaders.append([])
+
+    return loaders[0], loaders[1], loaders[2]

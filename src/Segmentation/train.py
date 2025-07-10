@@ -3,23 +3,24 @@ import json
 from src import utils
 from src.Segmentation import load
 
+"""
+Programa de entrenamiento basico.
+Entrena a un modelo en particular, puede ser seleccionado por consola o preprogramado en configuracion.json
+"""
+
 def main():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    isClasification = False
+    toLoad =  [True, True, False]
 
     with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
             configuration = json.load(file)
 
-    verbose = configuration["train"]["verbose"]
-    model_options = configuration["models"]["all"]
-    HISTORY_PATH = os.path.join(BASE_DIR, configuration["path"]["history"])
+    configuration = utils.set_train(configuration)
 
-    n_epochs, patience, print_epoch = utils.set_train(configuration)
-
-    selected_model = utils.select_model(model_options, configuration, verbose)
-    model, MODEL_PATH, dropout_rate, device, get_mask, lr, criterion, optimizer, batch_size = utils.set_model(selected_model, configuration, BASE_DIR, verbose)
-    train_loader, validation_loader, _ = load.get_loaders(BASE_DIR, configuration, get_mask, batch_size, verbose)
-    model = utils.train_loop(selected_model, MODEL_PATH, model, optimizer, criterion, train_loader, validation_loader, n_epochs, patience, dropout_rate, lr, device, isClasification, get_mask, HISTORY_PATH, verbose, print_epoch)
+    selected_model = utils.select_model(configuration)
+    model, criterion, optimizer = utils.set_model(BASE_DIR, configuration, selected_model)
+    train_loader, validation_loader, _ = load.get_loaders(BASE_DIR, configuration, selected_model, toLoad)
+    model = utils.train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criterion, train_loader, validation_loader)
 
 
 if __name__ == "__main__":

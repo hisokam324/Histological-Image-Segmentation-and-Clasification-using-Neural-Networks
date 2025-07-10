@@ -3,14 +3,17 @@
         "models": "models",
         "data": "dataNuInsSeg",
         "data division": ["train", "validation", "test"],
-        "history": "history"
+        "history": "history",
+        "hito": "hito"
     },
     "image":{
         "height": 256,
         "width": 256
     },
     "train":{
-        "gpu ram": 4194304,
+        "is clasification": false,
+        "device": "cuda",
+        "gpu ram": 4200000,
         "batch size": 16,
         "learn rate": 0.0001,
         "epochs": 100,
@@ -19,7 +22,11 @@
         "print epoch": 5,
         "use saved": true,
         "verbose":true,
-        "select model": 0
+        "select model": 0,
+        "classes": 0
+    },
+    "test": {
+        "idx": 100
     },
     "models":{
         "all": ["UNet", "Auto", "Transfer", "ShortUNet", "ShortAuto", "ShortTransfer"],
