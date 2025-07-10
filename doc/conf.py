@@ -8,7 +8,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../src'))
 
 project = 'Histological Image Segmentation and Clasification using Neural Networks'
 copyright = '2025, Rinaldo Mauricio Almada Bossio'
