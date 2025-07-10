@@ -20,6 +20,8 @@ release = '1.0.0'
 
 extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon']
 
+autodoc_mock_imports = ["torch", "matplotlib", "src"]
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
