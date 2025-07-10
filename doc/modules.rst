@@ -8,4 +8,6 @@ src
    Segmentation
    models
    prueba
+   prueba2
+   prueba3
    utils
