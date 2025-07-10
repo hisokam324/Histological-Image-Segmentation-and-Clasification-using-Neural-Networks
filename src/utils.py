@@ -1,3 +1,7 @@
+"""
+Se implementan dos funciones basicas
+"""
+
 import torch
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
@@ -8,16 +12,28 @@ from src import models
 
 
 class SignalDataset(Dataset):
+    """
+    Se implementan dos funciones basicas
+    """
     def __init__(self, X, Y):
+        """
+        Se implementan dos funciones basicas
+        """
         if not torch.is_tensor(X):
             self.X = torch.Tensor(X)
         if not torch.is_tensor(Y):
             self.Y = torch.Tensor(Y)
 
     def __len__(self):
+        """
+        Se implementan dos funciones basicas
+        """
         return len(self.X)
 
     def __getitem__(self, idx):
+        """
+        Se implementan dos funciones basicas
+        """
         return self.X[idx], self.Y[idx]
 
 def select_device():
@@ -301,6 +317,9 @@ def separate(configuration):
     return auto, segmentation
 
 def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
+    """
+    Testear segmentacion
+    """
     HITO_DIR = configuration["path"]["hito"]
     verbose = configuration["train"]["verbose"]
     device = configuration["train"]["device"]
