@@ -1,5 +1,5 @@
 """
-Se implementan dos funciones basicas
+Se implementan funciones basicas
 """
 
 import torch

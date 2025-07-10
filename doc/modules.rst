@@ -7,4 +7,5 @@ src
    Clasification
    Segmentation
    models
+   prueba
    utils
