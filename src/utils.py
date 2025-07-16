@@ -3,11 +3,13 @@ Se implementan funciones basicas
 """
 
 import torch
+import numpy as np
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 import os
 import json
 import time
+from tqdm import tqdm
 from src import models
 
 
@@ -215,12 +217,12 @@ def set_model(BASE_DIR, configuration, selected_model):
     if use_saved_model:
         if verbose:
             print("Usando salvado")
-        model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{selected_model}.pth")))
+        model.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{selected_model}.pth"), map_location=torch.device(device)))
     else:
         if len(model_name) != 1:
             try:  
                 aux = getattr(models, model_name[1])(dropout_rate = dropout_rate, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
-                aux.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{model_name[1]}.pth")))
+                aux.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{model_name[1]}.pth"), map_location=torch.device(device)))
                 model.encoder.load_state_dict(aux.encoder.state_dict())
             except: "Modelo de transfer learning no ecnontrado"
 
@@ -262,6 +264,7 @@ def train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criter
         start = time.time()
         i_time = time.time()
     best_epoch = epoch
+    selected_model_state_dict = model.state_dict()
     while ((epoch <= n_epochs) and (j < patience)):
         train_loss = train(model, train_loader, isClasification, get_mask, optimizer, criterion, device)
         validation_loss = test(model, validation_loader, isClasification, get_mask, criterion, device)
@@ -316,17 +319,39 @@ def separate(configuration):
     
     return auto, segmentation
 
+def dice(mask1, mask2):
+    mask1 = (mask1 > 0.5)
+    mask2 = (mask2 > 0.5)
+    
+    intersection = np.logical_and(mask1, mask2).sum()
+    sumatoria = (mask1.sum() + mask2.sum())
+    if sumatoria > 0.1:
+        return 2. * intersection / (mask1.sum() + mask2.sum())
+    else:
+        return 0.0
+
+def jaccard(mask1, mask2):
+    mask1 = (mask1 > 0.5)
+    mask2 = (mask2 > 0.5)
+
+    intersection = np.logical_and(mask1, mask2).sum()
+    union = np.logical_or(mask1, mask2).sum()
+    if union > 0.1:
+        return intersection / union
+    else:
+        return 0.0
+
 def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
     """
     Testear segmentacion
     """
-    HITO_DIR = configuration["path"]["hito"]
+    HITO_PATH = configuration["path"]["hito"]
     verbose = configuration["train"]["verbose"]
     device = configuration["train"]["device"]
     batch_size = configuration["train"]["batch size"]
     idx = configuration["test"]["idx"]
     get_mask = configuration["models"][selected_model]["get mask"]
-    
+
     idx_loader = idx//batch_size
     idx = idx % batch_size
     try:
@@ -343,8 +368,8 @@ def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
             i += 1
         input_image = input.permute(1, 2, 0).cpu().numpy()/255
         if get_mask:
-            target_image = target.squeeze().cpu().numpy()/255
-            output_image = output.squeeze().cpu().numpy()/255
+            target_image = target.squeeze().cpu().numpy()
+            output_image = output.squeeze().cpu().numpy()
         else:
             target_image = target.permute(1, 2, 0).cpu().numpy()/255
             output_image = output.permute(1, 2, 0).cpu().numpy()/255
@@ -366,8 +391,77 @@ def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
         plt.tight_layout()
         if verbose:
             plt.show()
-        fig.savefig(os.path.join(BASE_DIR, HITO_DIR, f"{selected_model}.png"))
+        fig.savefig(os.path.join(BASE_DIR, HITO_PATH, f"{selected_model}.png"))
     except: print("Imagen exede el batch")
+
+    if get_mask:
+        n_dice = 0
+        n_jaccard = 0
+        total = 0
+        for data in loader:
+            inputs, targets = data
+            with torch.no_grad():
+                outputs = model(inputs.to(device))
+            outputs = outputs.squeeze().cpu().numpy()
+            targets = targets.squeeze().cpu().numpy()
+            for i in range(len(outputs)):
+                total += 1
+                n_dice += dice(outputs[i], targets[i])
+                n_jaccard += jaccard(outputs[i], targets[i])
+        
+        print(f"dice: {n_dice}")
+        print(f"jaccard: {n_jaccard}")
+        hito = {"dice": n_dice/total, "jaccard": n_jaccard/total}
+        JSON_FILE = os.path.join(BASE_DIR, HITO_PATH, f"{selected_model}.json")
+        with open(JSON_FILE, 'w') as file:
+            json.dump(hito, file, indent=4)
+
+
+def test_clasification(BASE_DIR, configuration, selected_model, model, loader):
+    """
+    Testear segmentacion
+    """
+    HITO_PATH = configuration["path"]["hito"]
+    verbose = configuration["train"]["verbose"]
+    device = configuration["train"]["device"]
+    n_classes = configuration["train"]["classes"]
+
+    correct = 0
+    output_result = np.zeros(n_classes)
+    target_result = np.zeros(n_classes)
+    total = 0
+
+    model.eval()
+    for data in loader:
+        inputs, targets = data
+        with torch.no_grad():
+            outputs = model(inputs.to(device))
+            outputs = outputs.cpu()
+            for i in range(len(outputs)):
+                total += 1
+                if (torch.argmax(outputs[i]).item() == targets[i].item()):
+                    correct += 1
+                output_result[torch.argmax(outputs[i]).item()] += 1
+                target_result[targets[i].item()] += 1
+    
+    correct = correct/total
+    output_result = output_result/total
+    target_result = target_result/total
+
+    if verbose:
+        print(f"Correct: {correct}")
+        print(f"Output result:")
+        for i in range(n_classes):
+            print(f"class {i}: {output_result[i]}")
+        print(f"Output target:")
+        for i in range(n_classes):
+            print(f"class {i}: {target_result[i]}")
+    
+    hito = {"correct": correct, "output result": output_result.tolist(), "target result": target_result.tolist()}
+    JSON_FILE = os.path.join(BASE_DIR, HITO_PATH, f"{selected_model}.json")
+    with open(JSON_FILE, 'w') as file:
+        json.dump(hito, file, indent=4)
+
 
 def graph(BASE_DIR):
     """

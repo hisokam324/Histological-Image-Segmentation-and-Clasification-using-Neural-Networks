@@ -21,7 +21,6 @@ def main():
     configuration = utils.set_train(configuration)
 
     auto, segmentation = utils.separate(configuration)
-
     body(configuration, auto)
     body(configuration, segmentation)
 

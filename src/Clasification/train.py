@@ -3,20 +3,28 @@ import json
 from src import utils
 from src.Clasification import load
 
+"""
+Programa de entrenamiento basico.
+Entrena a un modelo en particular, puede ser seleccionado por consola o preprogramado en configuracion.json
+"""
+
 def main():
+    """
+    Parte principal
+    Selecciona el modelo, carga los datasets y llama a las funciones de entrenamiento
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    toLoad =  [True, True, False]
 
     with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
             configuration = json.load(file)
+    
+    configuration = utils.set_train(configuration)
 
-    HISTORY_PATH = os.path.join(BASE_DIR, configuration["path"]["history"])
-
-    n_epochs, patience, print_epoch = utils.set_train(configuration)
-
-    selected_model = utils.select_model(model_options, configuration, verbose)
+    selected_model = utils.select_model(configuration)
+    train_loader, validation_loader, _ = load.get_loaders(configuration, toLoad)
     model, criterion, optimizer = utils.set_model(BASE_DIR, configuration, selected_model)
-    train_loader, validation_loader, _ = load.get_loaders(batch_size)
-    model = utils.train_loop(selected_model, MODEL_PATH, model, optimizer, criterion, train_loader, validation_loader, n_epochs, patience, dropout_rate, lr, device, isClasification, get_mask, HISTORY_PATH, verbose, print_epoch)
+    model = utils.train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criterion, train_loader, validation_loader)
 
 
 if __name__ == "__main__":

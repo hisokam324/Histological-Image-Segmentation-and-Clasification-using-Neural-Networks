@@ -1,13 +1,16 @@
 {
     "path": {
         "models": "models",
-        "history": "history"
+        "history": "history",
+        "hito": "hito"
     },
     "image": {
         "height": 28,
         "width": 28
     },
     "train": {
+        "is clasification": true,
+        "device": "cuda",
         "gpu ram": 4200000,
         "batch size": 16,
         "learn rate": 0.0001,
@@ -17,7 +20,7 @@
         "print epoch": 1,
         "use saved": true,
         "verbose": true,
-        "select model": 0,
+        "selected model": 0,
         "classes": 9
     },
     "models":{

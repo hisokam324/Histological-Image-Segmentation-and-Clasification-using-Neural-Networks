@@ -9,6 +9,10 @@ Entrena a un modelo en particular, puede ser seleccionado por consola o preprogr
 """
 
 def main():
+    """
+    Parte principal
+    Selecciona el modelo, carga los datasets y llama a las funciones de entrenamiento
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     toLoad =  [True, True, False]
 
@@ -18,8 +22,8 @@ def main():
     configuration = utils.set_train(configuration)
 
     selected_model = utils.select_model(configuration)
-    model, criterion, optimizer = utils.set_model(BASE_DIR, configuration, selected_model)
     train_loader, validation_loader, _ = load.get_loaders(BASE_DIR, configuration, selected_model, toLoad)
+    model, criterion, optimizer = utils.set_model(BASE_DIR, configuration, selected_model)
     model = utils.train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criterion, train_loader, validation_loader)
 
 
