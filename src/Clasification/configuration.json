@@ -14,13 +14,14 @@
         "gpu ram": 4200000,
         "batch size": 16,
         "learn rate": 0.0001,
-        "epochs": 10,
-        "patience": 2,
+        "epochs": 1000,
+        "patience": 50,
         "dropout": 0.0,
-        "print epoch": 1,
+        "print epoch": 10,
         "use saved": true,
         "verbose": true,
         "selected model": 0,
+        "in channels": 1,
         "classes": 9
     },
     "models":{

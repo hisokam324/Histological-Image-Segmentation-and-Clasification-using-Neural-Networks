@@ -1,8 +1,8 @@
 {
     "path":{
-        "models": "models",
         "data": "dataNuInsSeg",
         "data division": ["train", "validation", "test"],
+        "models": "models",
         "history": "history",
         "hito": "hito"
     },
@@ -23,6 +23,7 @@
         "use saved": true,
         "verbose":true,
         "selected model": 0,
+        "in channels": 3,
         "classes": 0
     },
     "test": {

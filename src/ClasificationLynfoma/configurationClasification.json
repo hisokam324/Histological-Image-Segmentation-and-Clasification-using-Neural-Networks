@@ -1,0 +1,89 @@
+{
+    "path": {
+        "data": "Clasification Dataset",
+        "data division": ["train", "validation", "test", "test alter"],
+        "models": "models",
+        "history": "history",
+        "hito": "hito"
+    },
+    "image": {
+        "height": 400,
+        "width": 528
+    },
+    "train": {
+        "is clasification": true,
+        "device": "cuda",
+        "gpu ram": 4200000,
+        "batch size": 16,
+        "learn rate": 0.0001,
+        "epochs": 1000,
+        "patience": 25,
+        "dropout": 0.0,
+        "print epoch": 10,
+        "use saved": true,
+        "verbose": true,
+        "selected model": 0,
+        "in channels": 3,
+        "classes": 3
+    },
+    "models": {
+        "all": [
+            "CNN",
+            "TransferCNN",
+            "UNetClas",
+            "TransferUNetClas",
+            "NetCNN",
+            "NetMLP"
+        ],
+        "CNN": {
+            "model": [
+                "CNN"
+            ],
+            "get mask": false,
+            "criterion": "CrossEntropyLoss",
+            "optimizer": "Adam"
+        },
+        "TransferCNN": {
+            "model": [
+                "CNN",
+                "UNet"
+            ],
+            "get mask": false,
+            "criterion": "CrossEntropyLoss",
+            "optimizer": "Adam"
+        },
+        "UNetClas": {
+            "model": [
+                "UNetClas"
+            ],
+            "get mask": false,
+            "criterion": "CrossEntropyLoss",
+            "optimizer": "Adam"
+        },
+        "TransferUNetClas": {
+            "model": [
+                "UNetClas",
+                "UNet"
+            ],
+            "get mask": false,
+            "criterion": "CrossEntropyLoss",
+            "optimizer": "Adam"
+        },
+        "NetCNN": {
+            "model": [
+                "NetCNN"
+            ],
+            "get mask": false,
+            "criterion": "CrossEntropyLoss",
+            "optimizer": "Adam"
+        },
+        "NetMLP": {
+            "model": [
+                "NetMLP"
+            ],
+            "get mask": false,
+            "criterion": "CrossEntropyLoss",
+            "optimizer": "Adam"
+        }
+    }
+}

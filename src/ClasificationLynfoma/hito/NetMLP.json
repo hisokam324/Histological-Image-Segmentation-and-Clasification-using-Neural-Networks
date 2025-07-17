@@ -1,0 +1,13 @@
+{
+    "correct": 0.44,
+    "output result": [
+        0.0,
+        0.0,
+        1.0
+    ],
+    "target result": [
+        0.2,
+        0.36,
+        0.44
+    ]
+}

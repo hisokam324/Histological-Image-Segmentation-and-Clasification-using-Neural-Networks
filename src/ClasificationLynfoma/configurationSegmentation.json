@@ -1,0 +1,45 @@
+{
+    "path": {
+        "data": "Segmentation Dataset",
+        "data division": ["train", "validation", "test"],
+        "models": "models",
+        "history": "history",
+        "hito": "hito"
+    },
+    "image": {
+        "height": 480,
+        "width": 480
+    },
+    "train": {
+        "is clasification": false,
+        "device": "cuda",
+        "gpu ram": 4200000,
+        "batch size": 16,
+        "learn rate": 0.0001,
+        "epochs": 10,
+        "patience": 2,
+        "dropout": 0.0,
+        "print epoch": 1,
+        "use saved": true,
+        "verbose": true,
+        "selected model": 0,
+        "in channels": 3,
+        "classes": 0
+    },
+    "test":{
+        "idx":0
+    },
+    "models": {
+        "all": [
+            "UNet"
+        ],
+        "UNet": {
+            "model": [
+                "UNet"
+            ],
+            "get mask": true,
+            "criterion": "BCEWithLogitsLoss",
+            "optimizer": "Adam"
+        }
+    }
+}

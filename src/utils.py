@@ -202,6 +202,7 @@ def set_model(BASE_DIR, configuration, selected_model):
     optimizer_configuration = configuration["models"][selected_model]["optimizer"]
     verbose = configuration["train"]["verbose"]
     device = configuration["train"]["device"]
+    in_channels = configuration["train"]["in channels"]
     n_classes = configuration["train"]["classes"]
     use_saved_model = configuration["train"]["use saved"]
     dropout_rate = configuration["train"]["dropout"]
@@ -213,7 +214,7 @@ def set_model(BASE_DIR, configuration, selected_model):
     if use_saved_model:
         use_saved_model = os.path.exists(os.path.join(MODEL_PATH, f"{selected_model}.pth"))
 
-    model = getattr(models, model_name[0])(dropout_rate = dropout_rate, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
+    model = getattr(models, model_name[0])(dropout_rate = dropout_rate, in_channels = in_channels, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
     if use_saved_model:
         if verbose:
             print("Usando salvado")
@@ -279,7 +280,7 @@ def train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criter
             print("Train loss: {:.4f}".format(train_loss), ", Validation loss: {:.4f}".format(validation_loss), ", best: {:.4f}".format(min(best_val_loss, validation_loss)), f", Elapsed: {int((i_elapsed // 60) % 60)} minutos, {int(i_elapsed % 60)} segundos")
             i_time = time.time()
             
-        if (validation_loss <= best_val_loss):
+        if (validation_loss < best_val_loss):
             best_epoch = epoch
             best_train_loss = train_loss
             best_val_loss = validation_loss
@@ -442,7 +443,7 @@ def test_clasification(BASE_DIR, configuration, selected_model, model, loader):
                 if (torch.argmax(outputs[i]).item() == targets[i].item()):
                     correct += 1
                 output_result[torch.argmax(outputs[i]).item()] += 1
-                target_result[targets[i].item()] += 1
+                target_result[int(targets[i].item())] += 1
     
     correct = correct/total
     output_result = output_result/total
@@ -463,11 +464,11 @@ def test_clasification(BASE_DIR, configuration, selected_model, model, loader):
         json.dump(hito, file, indent=4)
 
 
-def graph(BASE_DIR):
+def graph(BASE_DIR, configuration_name = 'configuration.json'):
     """
     Funcion auxiliar encargada de graficar la evolucion del ultimo entrenamiento realizado de cada modelo
     """
-    with open(os.path.join(BASE_DIR, 'configuration.json')) as file:
+    with open(os.path.join(BASE_DIR, configuration_name)) as file:
         configuration = json.load(file)
 
     model_options = configuration["models"]["all"]

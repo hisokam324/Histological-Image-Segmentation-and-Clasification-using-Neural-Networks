@@ -5,9 +5,7 @@ src
    :maxdepth: 4
 
    Clasification
+   ClasificationLynfoma
    Segmentation
    models
-   prueba
-   prueba2
-   prueba3
    utils

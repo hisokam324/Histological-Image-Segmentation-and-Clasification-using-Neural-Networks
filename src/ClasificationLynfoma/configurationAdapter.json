@@ -1,0 +1,35 @@
+{
+    "path": {
+        "models": "models",
+        "general data": "Lymphoma-Dataset-main",
+        "segmentation data": "Modelling_Data",
+        "clasification data": [
+            "Optimization_Data",
+            "Testdata_Canine",
+            "Testdata_Feline"
+        ],
+        "dataset clasification": "Clasification Dataset",
+        "dataset segmentation": "Segmentation Dataset",
+        "data division": [
+            "train",
+            "validation",
+            "test",
+            "test alter"
+        ],
+        "history": "history"
+    },
+    "adapt dataset": {
+        "clasification": {
+            "factor": 3,
+            "classes": 3,
+            "rotations": 2
+        },
+        "segmentation": {
+            "division h": 2,
+            "division w": 2,
+            "rotations": 4
+        },
+        "validation": 0.1,
+        "test": 0.1
+    }
+}

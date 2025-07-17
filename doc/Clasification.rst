@@ -4,6 +4,14 @@ Clasification package
 Submodules
 ----------
 
+Clasification.graph module
+--------------------------
+
+.. automodule:: Clasification.graph
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Clasification.load module
 -------------------------
 
@@ -20,10 +28,26 @@ Clasification.test module
    :show-inheritance:
    :undoc-members:
 
+Clasification.testAll module
+----------------------------
+
+.. automodule:: Clasification.testAll
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Clasification.train module
 --------------------------
 
 .. automodule:: Clasification.train
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Clasification.trainAll module
+-----------------------------
+
+.. automodule:: Clasification.trainAll
    :members:
    :show-inheritance:
    :undoc-members:
