@@ -16,11 +16,11 @@ def get_loaders(configuration, toLoad):
         toLoad (List[Boolean]): Indicates wich loaders to create in order Train, Vaidation and Test. False loaders are return empty
     
     Returns: 
-        Train loader (PyTorch DataLoader): Loader meant for training
+        train_loader (PyTorch DataLoader): Loader meant for training
         
-        Validation loader (PyTorch DataLoader): Loader meant for validation
+        validation_loader (PyTorch DataLoader): Loader meant for validation
         
-        Test loader (PyTorch DataLoader): Loader meant for testing
+        test_loader (PyTorch DataLoader): Loader meant for testing
     '''
     batch_size = configuration["train"]["batch size"]
     download = True
