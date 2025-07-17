@@ -11,16 +11,16 @@ def get_loaders(configuration, toLoad):
     This function load PathMNIST images directly from MedMNIST and create the corresponding loaders
     
     Args:
-        configuration (dict): Configuration information, such as batch size
+        configuration (Dict): Configuration information, such as batch size
         
-        toLoad (boolean list): Indicates wich loaders to load, none load leaders will be return empty
+        toLoad (List[Boolean]): Indicates wich loaders to create in order Train, Vaidation and Test. False loaders are return empty
     
-    Returns:
-        Train loader (Loader): Loader meant for training
+    Returns: Pytorch Dataloader:
+        Train loader (PyTorch DataLoader): Loader meant for training
         
-        Validation loader (Loader): Loader meant for validation
+        Validation loader (PyTorch DataLoader): Loader meant for validation
         
-        Test loader (Loader): Loader meant for testing
+        Test loader (PyTorch DataLoader): Loader meant for testing
     '''
     batch_size = configuration["train"]["batch size"]
     download = True
