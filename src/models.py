@@ -33,10 +33,8 @@ class DoubleConv(nn.Module):
 class UNet(nn.Module):
     """
     Implementation of 4 layers UNet with skip conections
-    """
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=9, img_height=28, img_width=28):
-        """
-        Args:
+
+    Args:
             dropout_rate (Float): Drop out rate
 
             in_channels (Intager): Number of input image channels
@@ -47,8 +45,9 @@ class UNet(nn.Module):
 
             img_height (Intager): Dummy parameter
             
-            img_width (Intager): Dummy parameter      
-        """
+            img_width (Intager): Dummy parameter
+    """
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=9, img_height=28, img_width=28):
         super(UNet, self).__init__()
 
         # Encoder
@@ -109,10 +108,8 @@ class UNet(nn.Module):
 class Auto(nn.Module):
     """
     Implementation of 4 layers UNet without skip conections
-    """
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3, out_classes=9, img_height=28, img_width=28):
-        """
-        Args:
+
+    Args:
             dropout_rate (Float): Drop out rate
 
             in_channels (Intager): Number of input image channels
@@ -123,8 +120,9 @@ class Auto(nn.Module):
 
             img_height (Intager): Dummy parameter
             
-            img_width (Intager): Dummy parameter      
-        """
+            img_width (Intager): Dummy parameter   
+    """
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3, out_classes=9, img_height=28, img_width=28):
         super(Auto, self).__init__()
 
         # Encoder
@@ -181,10 +179,8 @@ class Auto(nn.Module):
 class ShortUNet(nn.Module):
     """
     Implementation of 3 layers UNet with skip conections
-    """
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=9, img_height=28, img_width=28):
-        """
-        Args:
+
+    Args:
             dropout_rate (Float): Drop out rate
 
             in_channels (Intager): Number of input image channels
@@ -195,8 +191,9 @@ class ShortUNet(nn.Module):
 
             img_height (Intager): Dummy parameter
             
-            img_width (Intager): Dummy parameter      
-        """
+            img_width (Intager): Dummy parameter 
+    """
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=9, img_height=28, img_width=28):
         super(ShortUNet, self).__init__()
 
         # Encoder
@@ -253,10 +250,8 @@ class ShortUNet(nn.Module):
 class ShortAuto(nn.Module):
     """
     Implementation of 3 layers UNet without skip conections
-    """
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3, out_classes=9, img_height=28, img_width=28):
-        """
-        Args:
+
+    Args:
             dropout_rate (Float): Drop out rate
 
             in_channels (Intager): Number of input image channels
@@ -267,8 +262,9 @@ class ShortAuto(nn.Module):
 
             img_height (Intager): Dummy parameter
             
-            img_width (Intager): Dummy parameter      
-        """
+            img_width (Intager): Dummy parameter 
+    """
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=3, out_classes=9, img_height=28, img_width=28):
         super(ShortAuto, self).__init__()
 
         # Encoder
@@ -320,11 +316,9 @@ class ShortAuto(nn.Module):
 
 class UNetClas(nn.Module):
     """
-    Implementation of clasifier based on a 4 layers UNet with skip conections and a fully conected layer  
-    """
-    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=3, img_height=1200, img_width=1600):
-        """
-        Args:
+    Implementation of clasifier based on a 4 layers UNet with skip conections and a fully conected layer 
+
+    Args:
             dropout_rate (Float): Drop out rate
 
             in_channels (Intager): Number of input image channels
@@ -335,8 +329,9 @@ class UNetClas(nn.Module):
 
             img_height (Intager): Input image height
             
-            img_width (Intager): Input image width      
-        """
+            img_width (Intager): Input image width  
+    """
+    def __init__(self, dropout_rate=0.0, in_channels=3, out_channels=1, out_classes=3, img_height=1200, img_width=1600):
         super(UNetClas, self).__init__()
 
         # Encoder
@@ -410,11 +405,9 @@ class UNetClas(nn.Module):
 
 class CNN(nn.Module):
     """
-    Implementation of CNN with 4 double convolutional layers  
-    """
-    def __init__(self, dropout_rate=0.0, in_channels=1, out_classes=9, img_height=28, img_width=28):
-        """
-        Args:
+    Implementation of CNN with 4 double convolutional layers
+
+    Args:
             dropout_rate (Float): Drop out rate
 
             in_channels (Intager): Number of input image channels
@@ -425,8 +418,9 @@ class CNN(nn.Module):
 
             img_height (Intager): Input image height
             
-            img_width (Intager): Input image width      
-        """
+            img_width (Intager): Input image width    
+    """
+    def __init__(self, dropout_rate=0.0, in_channels=1, out_classes=9, img_height=28, img_width=28):
         super(CNN, self).__init__()
         self.img_height = (img_height//16)*16
         self.img_width = (img_width//16)*16
@@ -472,11 +466,9 @@ class CNN(nn.Module):
 
 class NetCNN(nn.Module):
     """
-    Implementation of CNN with 2 convolutional layers  
-    """
-    def __init__(self, dropout_rate = 0.0, in_channels = 1, out_classes=9, img_height=28, img_width=28):
-        """
-        Args:
+    Implementation of CNN with 2 convolutional layers
+
+    Args:
             dropout_rate (Float): Dummy parameter
 
             in_channels (Intager): Number of input image channels
@@ -487,8 +479,9 @@ class NetCNN(nn.Module):
 
             img_height (Intager): Input image height
             
-            img_width (Intager): Input image width      
-        """
+            img_width (Intager): Input image width
+    """
+    def __init__(self, dropout_rate = 0.0, in_channels = 1, out_classes=9, img_height=28, img_width=28):
         super(NetCNN, self).__init__()
         self.img_height = img_height//4-3
         self.img_width = img_width//4-3
@@ -527,10 +520,8 @@ class NetCNN(nn.Module):
 class NetMLP(torch.nn.Module):
     """
     Implementation of MLP with 3 fully conected layers
-    """
-    def __init__(self, dropout_rate = 0.0, in_channels = 1, out_classes=9, img_height=28, img_width=28, hidden_layer = 15):
-        """
-        Args:
+
+    Args:
             dropout_rate (Float): Dummy parameter
 
             in_channels (Intager): Number of input image channels
@@ -541,8 +532,9 @@ class NetMLP(torch.nn.Module):
 
             img_height (Intager): Input image height
             
-            img_width (Intager): Input image width      
-        """
+            img_width (Intager): Input image width  
+    """
+    def __init__(self, dropout_rate = 0.0, in_channels = 1, out_classes=9, img_height=28, img_width=28, hidden_layer = 15):
         super(NetMLP, self).__init__()
         # Fully connected layers
         self.fc = nn.Sequential(
