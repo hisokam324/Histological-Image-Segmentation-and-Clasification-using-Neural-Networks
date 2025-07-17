@@ -1,9 +1,9 @@
-import os
-from src.utils import graph
-
 """
 Auxiliary module to graph last loss function of each model in this directory
 """
+
+import os
+from src.utils import graph
 
 def main():
     """
