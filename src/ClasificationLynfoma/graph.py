@@ -10,7 +10,8 @@ def main():
     Run code
     """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    graph(BASE_DIR)
+    graph(BASE_DIR, "configurationSegmentation")
+    graph(BASE_DIR, "configurationClasification")
 
 if __name__ == "__main__":
     main()

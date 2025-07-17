@@ -472,11 +472,16 @@ def test_clasification(BASE_DIR, configuration, selected_model, model, loader):
         json.dump(hito, file, indent=4)
 
 
-def graph(BASE_DIR, configuration_name = 'configuration.json'):
+def graph(BASE_DIR, configuration_name = 'configuration'):
     """
-    Funcion auxiliar encargada de graficar la evolucion del ultimo entrenamiento realizado de cada modelo
+    Auxiliary function to graph last loss function of each model in a give directory
+
+    Args:
+        BASE_DIR (String): Base directory
+
+        configuration_name (String): Name of configuration json
     """
-    with open(os.path.join(BASE_DIR, configuration_name)) as file:
+    with open(os.path.join(BASE_DIR, f"{configuration_name}.json")) as file:
         configuration = json.load(file)
 
     model_options = configuration["models"]["all"]
