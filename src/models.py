@@ -3,11 +3,9 @@ from torch import nn
 
 class DoubleConv(nn.Module):
     """
-    Implementation of double convolution 2D, with ReLU 
-    """
-    def __init__(self, in_channels, out_channels, dropout_rate=0.0, kernel_size = 3):
-        """
-        Args:
+    Implementation of double convolution 2D, with ReLU
+
+    Args:
             in_channels (Intager): Number of input feature maps
 
             out_channels (Intager): Number of output feature maps
@@ -15,7 +13,8 @@ class DoubleConv(nn.Module):
             dropout_rate (Float): Drop out rate
 
             kernel_size (Intager): Kernel size
-        """
+    """
+    def __init__(self, in_channels, out_channels, dropout_rate=0.0, kernel_size = 3):
         super(DoubleConv, self).__init__()
         padding = kernel_size//2
         layers = [
