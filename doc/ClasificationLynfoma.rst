@@ -1,4 +1,4 @@
-ClasificationLynfoma package
+ClasificationLynfoma
 ============================
 
 Submodules

@@ -1,4 +1,4 @@
-Clasification package
+Clasification
 =====================
 
 Submodules

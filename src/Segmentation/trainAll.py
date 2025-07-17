@@ -6,7 +6,7 @@ from src.Segmentation import load
 def body(configuration, models):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     toLoad = [True, True, False]
-    train_loader, validation_loader, _ = load.get_loaders(BASE_DIR, configuration, models[0], toLoad)
+    train_loader, validation_loader, _ = load.get_loaders(configuration, models[0], toLoad)
     for selected_model in models:
         model, criterion, optimizer = utils.set_model(BASE_DIR, configuration, selected_model)
         model = utils.train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criterion, train_loader, validation_loader)

@@ -5,7 +5,23 @@ from skimage.io import imread
 from src import utils
 
 def load_images(DATA_PATH, configuration, getMask = True, verbose = True, IMG_CHANNELS = 3):
+    '''
+    This function load images from a folder in directory
+    
+    Args:
+        DATA_PATH (String): Path to data
 
+        configuration (Dict): Configuration information, such as image height and width
+        
+        getMask (Boolean): Indicates if dataset has mask
+
+        verbose (Boolean): Indicates whether to print on console
+
+        IMG_CHANNELS (Intager): Number of image channels
+    
+    Returns: 
+        data (Tuple[Numpy Array, Numpy Array]): Input and Target images
+    '''
     IMG_HEIGHT = configuration["image"]["height"]
     IMG_WIDTH = configuration["image"]["width"]
 
@@ -39,7 +55,25 @@ def load_images(DATA_PATH, configuration, getMask = True, verbose = True, IMG_CH
         return (X, X)
     
 
-def get_loaders(BASE_DIR, configuration, selected_model, toLoad = [True, True, False]):
+def get_loaders(configuration, selected_model, toLoad = [True, True, False]):
+    '''
+    This function load images from a folder in directory and create the corresponding loaders
+    
+    Args:
+        configuration (Dict): Configuration information, such as batch size
+        
+        selected_model (Sting): Key from configuration dict, indicating model
+
+        toLoad (List[Boolean]): Indicates wich loaders to create in order Train, Vaidation and Test. False loaders are return empty
+    
+    Returns: 
+        train_loader (PyTorch DataLoader): Loader meant for training
+        
+        validation_loader (PyTorch DataLoader): Loader meant for validation
+        
+        test_loader (PyTorch DataLoader): Loader meant for testing
+    '''
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_PATH = os.path.join(BASE_DIR,configuration["path"]["data"])
     data_division = configuration["path"]["data division"]
     batch_size = configuration["train"]["batch size"]

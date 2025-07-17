@@ -22,7 +22,7 @@ def main():
     configuration = utils.set_train(configuration)
 
     selected_model = utils.select_model(configuration)
-    train_loader, validation_loader, _ = load.get_loaders(BASE_DIR, configuration, selected_model, toLoad)
+    train_loader, validation_loader, _ = load.get_loaders(configuration, selected_model, toLoad)
     model, criterion, optimizer = utils.set_model(BASE_DIR, configuration, selected_model)
     model = utils.train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criterion, train_loader, validation_loader)
 

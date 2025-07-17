@@ -53,7 +53,15 @@ def select_device():
 
 def create_loader(data, batch_size = 64):
     """
-    Funcion auxiliar que crea un loader a partir de data con formato (input, target). Los loaders se crean con un batch size especificado
+    This auxiliar function creates a Pytorch loader from the given data
+    
+    Args:
+        data (Tuple[Numpy Array, Numpy Array]): Input and Target images
+
+        batch_size (Intager): Number of images per batch
+
+    Returns:
+        loader (PyTorch DataLoader): Loader made from the given data
     """
     X, Y = data
     set = SignalDataset(X, Y)

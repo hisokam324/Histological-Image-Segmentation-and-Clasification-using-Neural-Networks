@@ -1,4 +1,4 @@
-Segmentation package
+Segmentation
 ====================
 
 Submodules
