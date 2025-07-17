@@ -8,9 +8,11 @@ Aca meter una introduccion, porque es interesante esto?
 
 [Installation](#installation)
 
-[Domain change](#domain-change)
-
 [Segmentation](#segmentation)
+
+[Clasification](#clasification)
+
+[Clasification Lynfoma](#clasification-lynfoma)
 
 [Credits](#credits)
 
@@ -24,13 +26,17 @@ Wiki 2
 
 Instalacion y como correr todo
 
-## Domain change
-
-Explicar cambio de dominio  y eso
-
 ## Segmentation
 
 Explicar segmentacion y eso
+
+## Clasification
+
+Eplicar lo que se hizo en segemntacion y eso
+
+## Clasification Lynfoma
+
+Explicar de donde sale el dataset y lo que se hizo, la inorporacion de todo lo que se hizo antes
 
 ## Credits
 
