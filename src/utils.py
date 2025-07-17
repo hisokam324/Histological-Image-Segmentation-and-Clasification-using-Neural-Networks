@@ -222,7 +222,7 @@ def set_model(BASE_DIR, configuration, selected_model):
     if use_saved_model:
         use_saved_model = os.path.exists(os.path.join(MODEL_PATH, f"{selected_model}.pth"))
 
-    model = getattr(models, model_name[0])(dropout_rate = dropout_rate, in_channels = in_channels, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
+    model = getattr(models, model_name[0])(dropout_rate = dropout_rate, in_channels = in_channels, out_classes=n_classes, img_height=IMG_HEIGHT, img_width=IMG_WIDTH)
     if use_saved_model:
         if verbose:
             print("Usando salvado")
@@ -230,7 +230,7 @@ def set_model(BASE_DIR, configuration, selected_model):
     else:
         if len(model_name) != 1:
             try:  
-                aux = getattr(models, model_name[1])(dropout_rate = dropout_rate, out_classes=n_classes, img_heigth=IMG_HEIGHT, img_width=IMG_WIDTH)
+                aux = getattr(models, model_name[1])(dropout_rate = dropout_rate, out_classes=n_classes, img_height=IMG_HEIGHT, img_width=IMG_WIDTH)
                 aux.load_state_dict(torch.load(os.path.join(MODEL_PATH, f"{model_name[1]}.pth"), map_location=torch.device(device)))
                 model.encoder.load_state_dict(aux.encoder.state_dict())
             except: "Modelo de transfer learning no ecnontrado"
