@@ -15,7 +15,7 @@ def get_loaders(configuration, toLoad):
         
         toLoad (List[Boolean]): Indicates wich loaders to create in order Train, Vaidation and Test. False loaders are return empty
     
-    Returns: Pytorch Dataloader:
+    Returns: 
         Train loader (PyTorch DataLoader): Loader meant for training
         
         Validation loader (PyTorch DataLoader): Loader meant for validation
