@@ -1,9 +1,9 @@
 {
-    "correct": 0.2,
+    "correct": 0.46,
     "output result": [
-        1.0,
+        0.06,
         0.0,
-        0.0
+        0.94
     ],
     "target result": [
         0.2,

@@ -1,8 +1,8 @@
 {
-    "correct": 0.2,
+    "correct": 0.36,
     "output result": [
-        1.0,
         0.0,
+        1.0,
         0.0
     ],
     "target result": [
