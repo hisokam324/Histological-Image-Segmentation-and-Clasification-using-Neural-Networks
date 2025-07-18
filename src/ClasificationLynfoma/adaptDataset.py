@@ -1,11 +1,30 @@
+"""
+Auxiliary module to adapt original data
+"""
+
 import cv2
 import json
 import os
 import pandas as pd
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 
 def save(img, PATH, name, j, extension, rotations):
+    """
+    Auxiliary function to save an image and its rotations
+
+    Args:
+        img (Numpy Array): Image to save
+
+        PATH (String): Image base path
+
+        name (String): Image extention path
+
+        j (Intager): Image number, to create image name
+
+        extension (String): Image extention, png or bmp
+
+        rotations (Intager): Number of rotations to save, 2 or 4
+    """
     img1 = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
     img2 = cv2.rotate(img, cv2.ROTATE_180)
     img3 = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
@@ -20,6 +39,21 @@ def save(img, PATH, name, j, extension, rotations):
         cv2.imwrite(os.path.join(PATH, name, f"{(j*rotations)+3}.{extension}"), img3)
 
 def crop(img, division_h, division_w, mask = False):
+    """
+    Auxiliary function to crop images
+
+    Args:
+        img (Numpy Array): Image to crop
+
+        division_h (Intager): height division
+
+        division_w (Intager): width division
+
+        mask (Boolean): Indicates if image has only one channel
+    
+        Returns:
+            out (List[Numpy Array]): List of cropped images
+    """
     out = []
     h, w = img.shape[:2]
     hh, ww = h//division_h, w//division_w
@@ -32,6 +66,17 @@ def crop(img, division_h, division_w, mask = False):
     return out
 
 def resize(img, factor):
+    """
+    Auxiliary function to resize images. Output size has module 16
+
+    Args:
+        img (Numpy Array): Image to resize
+
+        factor (Tuple[Intager, Intager]): Height and width factor to resize image
+
+    Returns:
+        out (Numpy Array): Resized image
+    """
     if factor != 1:
         h, w = img.shape[:2]
         hh, ww = h//factor, w//factor
@@ -43,10 +88,39 @@ def resize(img, factor):
     return out[:hh*16, :ww*16]
                   
 def cutExtention(path, cut_by = ".tiff"):
-      idx = path.find(cut_by)
-      return path[:idx], path[idx:]
+    """
+    Auxiliary function to cut extension of image path
+
+    Args:
+        path (String): Image path
+
+        cut_by (String): Flag to cut by
+
+    Returns:
+        base_path (String): Path without extention
+
+        extention_path (String): Extention of path
+    """
+    idx = path.find(cut_by)
+    return path[:idx], path[idx:]
 
 def main():
+    """
+    Run code:
+        Clasification:
+            Load original data
+
+            Resize images
+
+            Save images
+
+        Segmentation:
+            Load original data
+
+            Crop images
+
+            Save images
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     with open(os.path.join(BASE_DIR, 'configurationAdapter.json')) as file:

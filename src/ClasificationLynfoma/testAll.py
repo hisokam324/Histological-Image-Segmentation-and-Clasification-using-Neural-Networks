@@ -1,9 +1,19 @@
+"""
+Module to test all models in this directory
+"""
+
 import json
 import os
 from src import utils
 from src.ClasificationLynfoma import load
 
 def main(name):
+    """
+    Run code
+    
+    Args:
+        name (String): Name of configuration json file
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     toLoad = [False, False, True]
 

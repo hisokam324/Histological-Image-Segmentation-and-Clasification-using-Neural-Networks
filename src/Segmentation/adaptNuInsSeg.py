@@ -4,6 +4,26 @@ import os
 from tqdm import tqdm
 
 def save(img_path, i, PATH, name, j, extension, IMG_HEIGHT, IMG_WIDTH):
+    """
+    Auxiliary function to save an image and its rotations
+
+    Args:
+        img_path (String): Image base path
+
+        i (Intager): Image number in img_path
+
+        PATH (String): Costum data base path, saved image base path
+
+        name (String): Costum data extention path
+
+        j (Intager): Image number, to create image name
+
+        extension (String): Image extention, png or bmp
+
+        IMG_HEIGHT (Intager): Saved image height
+
+        IMG_WIDTH (Intager): Saved image width
+    """
     img = cv2.imread(os.path.join(img_path, os.listdir(img_path)[i]))
     if img.shape != (IMG_HEIGHT, IMG_WIDTH):
         img = cv2.resize(img, (IMG_HEIGHT, IMG_WIDTH))
@@ -19,6 +39,9 @@ def save(img_path, i, PATH, name, j, extension, IMG_HEIGHT, IMG_WIDTH):
     cv2.imwrite(os.path.join(PATH, name, f"{j+3}.{extension}"), img3)
 
 def main():
+    """
+    Run code
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     with open(os.path.join(BASE_DIR, 'configuration.json')) as file:

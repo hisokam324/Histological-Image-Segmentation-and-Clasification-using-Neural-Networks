@@ -1,9 +1,21 @@
+"""
+Module to train all models in this directory
+"""
+
 import os
 import json
 from src import utils
 from src.Segmentation import load
 
 def body(configuration, models):
+    """
+    Auxiliary function to train some models in directory
+
+    Args:
+        configuration (Dict): Configuration information
+
+        models (List[String]): List of models, keys from configuration dict
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     toLoad = [True, True, False]
     train_loader, validation_loader, _ = load.get_loaders(configuration, models[0], toLoad)
@@ -13,6 +25,12 @@ def body(configuration, models):
      
 
 def main():
+    """
+    Run code:
+        First: Auto Encoders
+
+        Second: Segmentation Encoders
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     with open(os.path.join(BASE_DIR, 'configuration.json')) as file:

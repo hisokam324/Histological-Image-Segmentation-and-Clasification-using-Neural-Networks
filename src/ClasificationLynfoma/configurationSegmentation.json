@@ -7,8 +7,8 @@
         "hito": "hito"
     },
     "image": {
-        "height": 480,
-        "width": 480
+        "height": 240,
+        "width": 240
     },
     "train": {
         "is clasification": false,
@@ -16,10 +16,10 @@
         "gpu ram": 4200000,
         "batch size": 16,
         "learn rate": 0.0001,
-        "epochs": 10,
-        "patience": 2,
+        "epochs": 100,
+        "patience": 25,
         "dropout": 0.0,
-        "print epoch": 1,
+        "print epoch": 10,
         "use saved": true,
         "verbose": true,
         "selected model": 0,

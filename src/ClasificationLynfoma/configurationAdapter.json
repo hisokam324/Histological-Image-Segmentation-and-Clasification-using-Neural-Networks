@@ -25,8 +25,8 @@
             "rotations": 2
         },
         "segmentation": {
-            "division h": 2,
-            "division w": 2,
+            "division h": 4,
+            "division w": 4,
             "rotations": 4
         },
         "validation": 0.1,

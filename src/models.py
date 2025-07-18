@@ -532,7 +532,9 @@ class NetMLP(torch.nn.Module):
 
             img_height (Intager): Input image height
             
-            img_width (Intager): Input image width  
+            img_width (Intager): Input image width
+
+            hidden_layer (Intager): Number of neurons in second layer
     """
     def __init__(self, dropout_rate = 0.0, in_channels = 1, out_classes=9, img_height=28, img_width=28, hidden_layer = 15):
         super(NetMLP, self).__init__()

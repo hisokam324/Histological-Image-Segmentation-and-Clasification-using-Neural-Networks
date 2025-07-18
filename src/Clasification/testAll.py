@@ -1,9 +1,16 @@
+"""
+Module to test all models in this directory
+"""
+
 import json
 import os
 from src import utils
 from src.Clasification import load
 
 def main():
+    """
+    Run code
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     toLoad = [False, False, True]
 

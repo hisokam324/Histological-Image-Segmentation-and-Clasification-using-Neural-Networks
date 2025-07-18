@@ -10,6 +10,19 @@ from skimage.io import imread
 from src import utils
 
 def load_images(SPLIT_PATH, configuration, IMG_CHANNELS = 3):
+    """
+    Auxiliary function to load images from costum dataset in directory
+
+    Args:
+        SPLIT_PATH (String): Path to dataset
+
+        configuration (Dict): Configuration information, such as image height and width
+
+        IMG_CHANNELS (Intager): Number of image channels
+    
+    Returns:
+        data (Tuple[Numpy Array, Numpy Array]): Input and Target images
+    """
     verbose = configuration["train"]["verbose"]
     isClasification = configuration["train"]["is clasification"]
     IMG_HEIGHT = configuration["image"]["height"]
@@ -45,6 +58,21 @@ def load_images(SPLIT_PATH, configuration, IMG_CHANNELS = 3):
     return (X, Y)
 
 def get_loaders(configuration, toLoad):
+    '''
+    This function load images from a folder in directory and create the corresponding loaders
+    
+    Args:
+        configuration (Dict): Configuration information, such as batch size
+
+        toLoad (List[Boolean]): Indicates wich loaders to create in order Train, Vaidation and Test. False loaders are return empty
+    
+    Returns: 
+        train_loader (PyTorch DataLoader): Loader meant for training
+        
+        validation_loader (PyTorch DataLoader): Loader meant for validation
+        
+        test_loader (PyTorch DataLoader): Loader meant for testing
+    '''
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_PATH = os.path.join(BASE_DIR, configuration["path"]["data"])
     data_division = configuration["path"]["data division"]

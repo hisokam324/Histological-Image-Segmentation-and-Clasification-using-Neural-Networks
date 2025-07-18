@@ -112,10 +112,10 @@ configuration["image"]["clasification"]["width"] = w
 
 clasification_train = pd.DataFrame(clasification_train, columns=["Class"])
 clasification_train.index.name = "Image"
-clasification_train.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0], "Estimation.csv"))
+#clasification_train.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[0], "Estimation.csv"))
 clasification_validation = pd.DataFrame(clasification_validation, columns=["Class"])
 clasification_validation.index.name = "Image"
-clasification_validation.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[1], "Estimation.csv"))
+#clasification_validation.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[1], "Estimation.csv"))
 
 # Test canino
 
@@ -140,7 +140,7 @@ for image in tqdm(c_images):
 
 clasification_test = pd.DataFrame(clasification_test, columns=["Class"])
 clasification_test.index.name = "Image"
-clasification_test.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[2], "Estimation.csv"))
+#clasification_test.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[2], "Estimation.csv"))
 
 # Test Felino
 
@@ -165,7 +165,7 @@ for image in tqdm(c_images):
 
 clasification_test = pd.DataFrame(clasification_test, columns=["Class"])
 clasification_test.index.name = "Image"
-clasification_test.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[3], "Estimation.csv"))
+#clasification_test.to_csv(os.path.join(DATASET_CLASIFICATION, DATA_DIVISION[3], "Estimation.csv"))
 
 print("SEGMENTATION:")
 

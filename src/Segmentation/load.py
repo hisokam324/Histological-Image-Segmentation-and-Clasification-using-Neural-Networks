@@ -10,7 +10,7 @@ from src import utils
 
 def load_images(DATA_PATH, configuration, getMask = True, verbose = True, IMG_CHANNELS = 3):
     '''
-    This function load images from a folder in directory
+    Auxiliary function to load images from costum dataset in directory
     
     Args:
         DATA_PATH (String): Path to data

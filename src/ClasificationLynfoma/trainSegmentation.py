@@ -1,17 +1,15 @@
+"""
+Module to train one segmentation model in this directory
+"""
+
 import os
 import json
 from src import utils
 from src.ClasificationLynfoma import load
 
-"""
-Programa de entrenamiento basico.
-Entrena a un modelo en particular, puede ser seleccionado por consola o preprogramado en configuracion.json
-"""
-
 def main():
     """
-    Parte principal
-    Selecciona el modelo, carga los datasets y llama a las funciones de entrenamiento
+    Run code
     """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     toLoad =  [True, True, False]
