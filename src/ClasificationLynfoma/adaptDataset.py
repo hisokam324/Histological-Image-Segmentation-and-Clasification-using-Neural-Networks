@@ -51,8 +51,8 @@ def crop(img, division_h, division_w, mask = False):
 
         mask (Boolean): Indicates if image has only one channel
     
-        Returns:
-            out (List[Numpy Array]): List of cropped images
+    Returns:
+        out (List[Numpy Array]): List of cropped images
     """
     out = []
     h, w = img.shape[:2]
