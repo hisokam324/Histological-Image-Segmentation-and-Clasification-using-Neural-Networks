@@ -1,10 +1,10 @@
+"""
+Auxiliary module to create loaders
+"""
+
 from medmnist import PathMNIST
 from torchvision import transforms
 from torch.utils.data import DataLoader
-
-"""
-Auxiliary module to load images
-"""
 
 def get_loaders(configuration, toLoad):
     '''

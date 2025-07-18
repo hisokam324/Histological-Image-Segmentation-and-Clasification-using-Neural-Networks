@@ -1,3 +1,7 @@
+"""
+Auxiliary module to create loaders
+"""
+
 import numpy as np
 import pandas as pd
 import os

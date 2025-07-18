@@ -1,5 +1,5 @@
 """
-Se implementan funciones basicas
+Implementation of general utility functions
 """
 
 import torch
@@ -15,32 +15,28 @@ from src import models
 
 class SignalDataset(Dataset):
     """
-    Se implementan dos funciones basicas
+    Implementation of custom Pytorch Dataset
+
+    Args:
+        X (Numpy Array): Input images
+
+        Y (Numpy Array): Target images
     """
     def __init__(self, X, Y):
-        """
-        Se implementan dos funciones basicas
-        """
         if not torch.is_tensor(X):
             self.X = torch.Tensor(X)
         if not torch.is_tensor(Y):
             self.Y = torch.Tensor(Y)
 
     def __len__(self):
-        """
-        Se implementan dos funciones basicas
-        """
         return len(self.X)
 
     def __getitem__(self, idx):
-        """
-        Se implementan dos funciones basicas
-        """
         return self.X[idx], self.Y[idx]
 
 def select_device():
     """
-    Funcion auxiliar que identifica la presencia de grafica para realizar los calculos
+    Auxiliary function to select device: CPU or CUDA
     """
     is_cuda = torch.cuda.is_available()
 
@@ -53,7 +49,7 @@ def select_device():
 
 def create_loader(data, batch_size = 64):
     """
-    This auxiliar function creates a Pytorch loader from the given data
+    Auxiliar function to create a Pytorch loader from given data
     
     Args:
         data (Tuple[Numpy Array, Numpy Array]): Input and Target images
@@ -61,7 +57,7 @@ def create_loader(data, batch_size = 64):
         batch_size (Intager): Number of images per batch
 
     Returns:
-        loader (PyTorch DataLoader): Loader made from the given data
+        loader (PyTorch DataLoader): Loader made from given data
     """
     X, Y = data
     set = SignalDataset(X, Y)
@@ -70,7 +66,18 @@ def create_loader(data, batch_size = 64):
 
 def save_json(BASE_DIR, configuration, selected_model, train_losses, validation_losses):
     """
-    Funcion que salva los resultados obteidos del entrenamiento en un json
+    Auxiliary function to save train and validation losses in a json file
+    
+    Args:
+        BASE_DIR (String): Base directory
+
+        configuration (Dict): Configuration information
+
+        selected_model (String): Key from configuration dict, indicating model
+
+        train_losses (List[Float]): Train loss function
+
+        validation_losses (List[Float]): Validation loss function
     """
     # Carga de datos importantes
     HISTORY_PATH = os.path.join(BASE_DIR, configuration["path"]["history"])
@@ -100,7 +107,13 @@ def save_json(BASE_DIR, configuration, selected_model, train_losses, validation_
 
 def select_model(configuration):
     """
-    Funcion auxiliar para seleccionar el modelo a utilizar
+    Auxiliary function to select model
+
+    Args:
+        Configuration (Dict): Configuration information
+    
+    Returns:
+        selected_model (String): Key from configuration dict, indicating model
     """
     verbose = configuration["train"]["verbose"]
     model_options = configuration["models"]["all"]
@@ -126,8 +139,25 @@ def select_model(configuration):
 
 def train(model, loader, isClasification, get_mask, optimizer, criterion, device):
     """
-    Funcion de entrenamiento basica
-    (Considera los posibles tipos de entrenamientos esperados, reconstruccion, segmentacion y clasificacion)
+    Basic train function
+
+    Args:
+        model (Pytorch Object): Model to train
+
+        loader (Pytorch Loader): Data loader
+
+        isClasification (Boolean): Indicates if tranning is clasification or segmentation
+
+        get_mask (Boolean): Indicates if loader has mask
+
+        optimizer (Pythorch Object): Model optimizer
+
+        criterion (Pythorch Object): Loss criterion
+
+        device (String): Pytorch device
+
+    Returns:
+        total_loss (Float): Total train loss
     """
     total_loss = 0.0
     for data in loader:
@@ -154,8 +184,23 @@ def train(model, loader, isClasification, get_mask, optimizer, criterion, device
 
 def test(model, loader, isClasification, get_mask, criterion, device):
     """
-    Funcion de testeo durante entrenamiento basica
-    (Considera los posibles tipos de entrenamientos esperados, reconstruccion, segmentacion y clasificacion)
+    Basic test function
+
+    Args:
+        model (Pytorch Object): Model to test
+
+        loader (Pytorch Loader): Data loader
+
+        isClasification (Boolean): Indicates if testing is clasification or segmentation
+
+        get_mask (Boolean): Indicates if loader has mask
+
+        criterion (Pythorch Object): Loss criterion
+
+        device (String): Pytorch device
+
+    Returns:
+        total_loss (Float): Total test loss
     """
     model.eval()
     total_loss = 0.0
@@ -178,7 +223,13 @@ def test(model, loader, isClasification, get_mask, criterion, device):
 
 def set_train(configuration):
     """
-    Funcion para obtener el device y batch size del entrenamiento
+    Auxiliary functio to set device and batch_size
+
+    Args:
+        configuration (Dict): Configuration information
+    
+    Returns:
+        configuration (Dict): Updated cofiguration information
     """
     IMG_HEIGHT = configuration["image"]["height"]
     IMG_WIDTH = configuration["image"]["width"]
@@ -200,7 +251,21 @@ def set_train(configuration):
 
 def set_model(BASE_DIR, configuration, selected_model):
     """
-    Fucnion para obtener el modelo con todos sus parametros seteados
+    Auxiliary fuction to set model
+
+    Args:
+        BASE_DIR (String): Base directory
+
+        configuration (Dict): Configuration information
+
+        selected_model (String): Key from configuration dict, indicating model
+    
+    Returns:
+        model (Pytorch Object): Model Object
+
+        optimizer (Pythorch Object): Model optimizer
+
+        criterion (Pythorch Object): Loss criterion
     """
     MODEL_PATH = os.path.join(BASE_DIR, configuration["path"]["models"])
     IMG_HEIGHT = configuration["image"]["height"]
@@ -247,7 +312,27 @@ def set_model(BASE_DIR, configuration, selected_model):
 
 def train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criterion, train_loader, validation_loader):
     """
-    Bucle de entrenamiento principal
+    Principal train loop function
+
+    Args:
+        BASE_DIR (String): Base directory
+
+        configuration (Dict): Configuration information
+
+        selected_model (String): Key from configuration dict, indicating model
+
+        model (Pytorch Object): Model to train
+
+        optimizer (Pythorch Object): Model optimizer
+
+        criterion (Pythorch Object): Loss criterion
+
+        train_loader (Pytorch Loader): Train data loader
+
+        validation_loader (Pytorch Loader): Validation data loader
+    
+    Returns:
+        model (Pytorch Object): Trained model
     """
     MODEL_PATH = os.path.join(BASE_DIR, configuration["path"]["models"])
     isClasification = configuration["train"]["is clasification"]
@@ -313,7 +398,15 @@ def train_loop(BASE_DIR, configuration, selected_model, model, optimizer, criter
 
 def separate(configuration):
     """
-    Funcion auxiliar para separar los entrenamientos sin y con mascara
+    Auxiliary function to separate models with and without masks
+
+    Args:
+        configuration (Dict): Configuration information
+    
+    Returns:
+        auto (List[String]): List of model names (configuration keys) without masks
+
+        segmentation (List[String]): List of model names (configuration keys) with masks
     """
     auto = []
     segmentation = []
@@ -329,6 +422,17 @@ def separate(configuration):
     return auto, segmentation
 
 def dice(mask1, mask2):
+    """
+    Auxiliary function to calculate Dice coeficient
+
+    Args:
+        mask1 (Numpy Array): First mask
+
+        mask2 (Numpy Array): Second mask
+
+    Returns:
+        dice_coeficient (Float): Dice coeficient betoween mask1 and mask2
+    """
     mask1 = (mask1 > 0.5)
     mask2 = (mask2 > 0.5)
     
@@ -340,6 +444,17 @@ def dice(mask1, mask2):
         return 0.0
 
 def jaccard(mask1, mask2):
+    """
+    Auxiliary function to calculate jaccard index
+
+    Args:
+        mask1 (Numpy Array): First mask
+
+        mask2 (Numpy Array): Second mask
+
+    Returns:
+        jaccard_index (Float): Jaccard index betoween mask1 and mask2
+    """
     mask1 = (mask1 > 0.5)
     mask2 = (mask2 > 0.5)
 
@@ -352,7 +467,18 @@ def jaccard(mask1, mask2):
 
 def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
     """
-    Testear segmentacion
+    Auxiliary function to test segmentation
+
+    Args:
+        BASE_DIR (String): Base directory
+
+        configuration (Dict): Configuration information
+
+        selected_model (String): Key from configuration dict, indicating model
+
+        model (Pytorch Object): Model Object
+
+        loader (Pytorch Loader): Test data loader
     """
     HITO_PATH = configuration["path"]["hito"]
     verbose = configuration["train"]["verbose"]
@@ -428,7 +554,18 @@ def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
 
 def test_clasification(BASE_DIR, configuration, selected_model, model, loader):
     """
-    Testear segmentacion
+    Auxiliary function to test clasification
+
+    Args:
+        BASE_DIR (String): Base directory
+
+        configuration (Dict): Configuration information
+
+        selected_model (String): Key from configuration dict, indicating model
+
+        model (Pytorch Object): Model Object
+
+        loader (Pytorch Loader): Test data loader
     """
     HITO_PATH = configuration["path"]["hito"]
     verbose = configuration["train"]["verbose"]
