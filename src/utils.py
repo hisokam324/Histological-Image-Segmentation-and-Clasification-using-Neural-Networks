@@ -504,6 +504,7 @@ def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
         input_image = input.permute(1, 2, 0).cpu().numpy()/255
         if get_mask:
             target_image = target.squeeze().cpu().numpy()
+            output = (output > 0.5)
             output_image = output.squeeze().cpu().numpy()
         else:
             target_image = target.permute(1, 2, 0).cpu().numpy()/255
@@ -544,8 +545,8 @@ def test_segmentation(BASE_DIR, configuration, selected_model, model, loader):
                 n_dice += dice(outputs[i], targets[i])
                 n_jaccard += jaccard(outputs[i], targets[i])
         
-        print(f"dice: {n_dice}")
-        print(f"jaccard: {n_jaccard}")
+        print(f"dice: {n_dice/total}")
+        print(f"jaccard: {n_jaccard/total}")
         hito = {"dice": n_dice/total, "jaccard": n_jaccard/total}
         JSON_FILE = os.path.join(BASE_DIR, HITO_PATH, f"{selected_model}.json")
         with open(JSON_FILE, 'w') as file:

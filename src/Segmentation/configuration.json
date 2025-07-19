@@ -27,7 +27,7 @@
         "classes": 0
     },
     "test": {
-        "idx": 100
+        "idx": 50
     },
     "models":{
         "all": ["UNet", "Auto", "Transfer", "ShortUNet", "ShortAuto", "ShortTransfer"],

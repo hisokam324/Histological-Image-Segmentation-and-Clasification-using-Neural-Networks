@@ -2,6 +2,10 @@
 
 Aca meter una introduccion, porque es interesante esto?
 
+<p align="center">
+    <img src=Readme_images/example.png width = "100%">
+</p>
+
 ## Index
 
 ### Readme
