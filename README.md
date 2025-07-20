@@ -21,11 +21,11 @@ This repository has some examples on how to create basic segmentation and clasif
 [Credits](#credits)
 
 
-### <a href="https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki" style="color: white;"> Wiki</a>
+### Wiki
 
-Wiki 1
+[Tutorials](https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki/Tutorials) 
 
-Wiki 2
+[src](https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki/src)
 
 ## Installation
 
