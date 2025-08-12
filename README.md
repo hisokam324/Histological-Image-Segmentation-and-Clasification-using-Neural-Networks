@@ -29,7 +29,9 @@ This repository has some examples on how to create basic segmentation and clasif
 
 ## Installation
 
-Instalacion y como correr todo
+In order to use this code is necessary to install the modules in requirements.txt.
+
+    pip install -r requirements.txt
 
 ## Tutorials
 
