@@ -1,74 +1,91 @@
-# Histological Image Segmentation and Clasification using Neural Networks
+# Histological Image Segmentation and Classification using Neural Networks
 
-This repository has some examples on how to create basic segmentation and clasification neural networks models using Pytorch
+This repository contains examples on how to create basic segmentation and classification neural network models using PyTorch.
 
 <p align="center">
-    <img src=Readme_images/example.png width = "100%">
+    <img src="Readme_images/example.png" width="100%">
 </p>
 
 ## Index
 
 ### Readme
 
-[Installation](#installation)
-
-[Segmentation](#segmentation)
-
-[Clasification](#clasification)
-
-[Clasification Lynfoma](#clasification-lynfoma)
-
-[Credits](#credits)
-
+- [Installation](#installation)  
+- [Segmentation](#segmentation)  
+- [Classification](#classification)  
+- [Classification Lymphoma](#classification-lymphoma)  
+- [Credits](#credits)  
 
 ### Wiki
 
-[Tutorials](https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki/Tutorials) 
-
-[src](https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki/src)
+- [Tutorials](https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki/Tutorials)  
+- [src](https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki/src)  
 
 ## Installation
 
-In order to use this code is necessary to install the modules in requirements.txt.
+To use this code, it is necessary to install the modules listed in `requirements.txt`:
 
     pip install -r requirements.txt
 
 ## Tutorials
+This folder contains tutorials to understand how to implement basic neural networks in PyTorch.
 
-This folder has tutorials in order to undertand how to implement basic neural networks in Pytorch.
+### PyTorch
+A curated collection of PyTorch tutorials sourced from [Pytorch.org](https://pytorch.org/) and the [PyTorch YouTube channel](https://www.youtube.com/playlist?list=PL_lsbAsL_o2CTlGHgMxNrKhzP97BaG9ZN).
+It includes five .ipynb notebooks covering:
 
-### Pytorch
+    Tensors
 
-Collection of Pytorch tutorials extracted from [pytorch.org](https://pytorch.org/) and [youtube.com/pytorch](https://www.youtube.com/playlist?list=PL_lsbAsL_o2CTlGHgMxNrKhzP97BaG9ZN). It has 5 ipynb notbooks about Tensors, Autograd, building models, tensorborad and model trainning. 
+    Autograd
+
+    Building Models
+
+    TensorBoard
+
+    Model Training
 
 ### Neural Networks
+A collection of basic neural network tutorials adapted from [OpenFing — Aprendizaje Profundo para el Análisis de Imágenes Biomédicas](https://open.fing.edu.uy/courses/dlbioim/4/).
+It includes five .ipynb notebooks covering:
 
-Collection of basic Neural Networks tutorials extracted from [OpenFing/Aprendizaje Profundo para el Análisis de Imágenes Biomédicas](https://open.fing.edu.uy/courses/dlbioim/4/) It has 5 ipynb notbooks about Introduction, Autograd, MLP, CNN and RNR. Additionaly, following the preexising notbooks, 2 new notbooks were created, named Auto (implementing an Autoencoder) and UNet. This last notbooks were tested using the [data-science-bowl-2018](https://www.kaggle.com/competitions/data-science-bowl-2018) dataset consisting in fluorecent images for segmentation.
+    Introduction
+
+    Autograd
+
+    MLP
+
+    CNN
+
+    RNN
+
+Additionally, following the pre-existing notebooks, two new notebooks were created:
+
+    Auto – Implementation of an Autoencoder
+
+    UNet – Implementation of a UNet architecture
+
+These additional notebooks were tested using the [Data Science Bowl 2018 dataset](https://www.kaggle.com/competitions/data-science-bowl-2018), which consists of fluorescent microscopy images for segmentation.
 
 ## src
-
-This folder has the results of implemnting some basic Neural Networks in pytorch for Histological analisys.
+This folder contains the results of implementing basic neural networks in PyTorch for histological analysis.
 
 ### utils
-
-Axiluary module to run main code.
+Auxiliary module for running the main code.
 
 ### models
-
-Pytorch models implementation
+PyTorch model implementations.
 
 ### Segmentation
+Segmentation training on the [NuInsSeg](https://www.kaggle.com/datasets/ipateam/nuinsseg) dataset.
 
-Segmentation trainning over [NuInsSeg](https://www.kaggle.com/datasets/ipateam/nuinsseg)
+### Classification
+Classification training on the [PathMNIST](https://medmnist.com/) dataset.
 
-### Clasification
-
-Clasification trainning over [PathMNIST](https://medmnist.com/)
-
-### Clasification Lynfoma
-
-Segmentation and Clasification trainning over [fe-extern/Lymphoma Dataset](https://git.fh-ooe.at/fe-extern/Lymphoma-Dataset)
+### Classification Lymphoma
+Segmentation and classification training on the [fe-extern/Lymphoma Dataset](https://git.fh-ooe.at/fe-extern/Lymphoma-Dataset) Dataset.
 
 ## Credits
 
-Llenar creditos
+Tutorials adapted from [PyTorch](https://pytorch.org/) and [OpenFing](https://open.fing.edu.uy/courses/dlbioim/4/).
+
+Data provided by [Kaggle](https://www.kaggle.com/), [MedMNIST](https://medmnist.com/) and [fe-extern](https://git.fh-ooe.at/fe-extern).
