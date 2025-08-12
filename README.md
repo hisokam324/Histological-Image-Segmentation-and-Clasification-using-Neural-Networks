@@ -35,28 +35,40 @@ In order to use this code is necessary to install the modules in requirements.tx
 
 ## Tutorials
 
+This folder has tutorials in order to undertand how to implement basic neural networks in Pytorch.
+
 ### Pytorch
 
-### Neural etworks
+Collection of Pytorch tutorials extracted from [pytorch.org](https://pytorch.org/) and [youtube.com/pytorch](https://www.youtube.com/playlist?list=PL_lsbAsL_o2CTlGHgMxNrKhzP97BaG9ZN). It has 5 ipynb notbooks about Tensors, Autograd, building models, tensorborad and model trainning. 
+
+### Neural Networks
+
+Collection of basic Neural Networks tutorials extracted from [OpenFing/Aprendizaje Profundo para el Análisis de Imágenes Biomédicas](https://open.fing.edu.uy/courses/dlbioim/4/) It has 5 ipynb notbooks about Introduction, Autograd, MLP, CNN and RNR. Additionaly, following the preexising notbooks, 2 new notbooks were created, named Auto (implementing an Autoencoder) and UNet. This last notbooks were tested using the [data-science-bowl-2018](https://www.kaggle.com/competitions/data-science-bowl-2018) dataset consisting in fluorecent images for segmentation.
 
 ## src
 
+This folder has the results of implemnting some basic Neural Networks in pytorch for Histological analisys.
+
 ### utils
+
+Axiluary module to run main code.
 
 ### models
 
+Pytorch models implementation
+
 ### Segmentation
 
-Explicar segmentacion y eso
+Segmentation trainning over [NuInsSeg](https://www.kaggle.com/datasets/ipateam/nuinsseg)
 
 ### Clasification
 
-Eplicar lo que se hizo en segemntacion y eso
+Clasification trainning over [PathMNIST](https://medmnist.com/)
 
 ### Clasification Lynfoma
 
-Explicar de donde sale el dataset y lo que se hizo, la inorporacion de todo lo que se hizo antes
+Segmentation and Clasification trainning over [fe-extern/Lymphoma Dataset](https://git.fh-ooe.at/fe-extern/Lymphoma-Dataset)
 
 ## Credits
 
-Creditos y demas
+Llenar creditos
