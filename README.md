@@ -84,6 +84,15 @@ Classification training on the [PathMNIST](https://medmnist.com/) dataset.
 ### Classification Lymphoma
 Segmentation and classification training on the [fe-extern/Lymphoma Dataset](https://git.fh-ooe.at/fe-extern/Lymphoma-Dataset) Dataset.
 
+### Add new folder
+> Create "models" folder to save models parameters.
+>
+> Create "configuration.json" to set traning parameters, see more (wiki) agregar link.
+>
+> Create "load.py" to load dataset.
+>
+> Create training and test files, using "utils.py" and "load.py" functions.
+
 ## Credits
 
 Tutorials adapted from [PyTorch](https://pytorch.org/) and [OpenFing](https://open.fing.edu.uy/courses/dlbioim/4/).
