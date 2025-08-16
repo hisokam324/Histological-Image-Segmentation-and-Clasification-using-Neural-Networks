@@ -10,10 +10,14 @@ This repository contains examples on how to create basic segmentation and classi
 
 ### Readme
 
-- [Installation](#installation)  
-- [Segmentation](#segmentation)  
-- [Classification](#classification)  
-- [Classification Lymphoma](#classification-lymphoma)  
+- [Installation](#installation)
+- [Tutorials](#tutorials)
+  - [Pytorch](#Pytorch)
+  - [Neural Networks](#neural-networks)
+- [src](#src)
+  - [Segmentation](#segmentation)  
+  - [Classification](#classification)  
+  - [Classification Lymphoma](#classification-lymphoma)  
 - [Credits](#credits)  
 
 ### Wiki
