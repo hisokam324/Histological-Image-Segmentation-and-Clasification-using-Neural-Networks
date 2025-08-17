@@ -89,13 +89,10 @@ Classification training on the [PathMNIST](https://medmnist.com/) dataset.
 Segmentation and classification training on the [fe-extern/Lymphoma Dataset](https://git.fh-ooe.at/fe-extern/Lymphoma-Dataset) Dataset.
 
 ### Add new folder
-> Create "models" folder to save models parameters.
->
-> Create "configuration.json" to set traning parameters, see more (wiki) agregar link.
->
-> Create "load.py" to load dataset.
->
-> Create training and test files, using "utils.py" and "load.py" functions.
+- Create "models" folder to save models parameters.
+- Create "configuration.json" to set traning parameters, see more [wiki](https://github.com/hisokam324/Histological-Image-Segmentation-and-Clasification-using-Neural-Networks/wiki/src#configuration).
+- Create "load.py" to load dataset.
+- Create training and test files, using "utils.py" and "load.py" functions.
 
 ## Credits
 
